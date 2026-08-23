@@ -23,11 +23,14 @@ const NOTES_LIST = [
   "Plum", "Cocoa", "Praline", "Suede", "Birch",
 ];
 
+const LANG_LABELS = { ku: "KU", ar: "AR", en: "EN" };
+
 export default function Home() {
   const [perfumes, setPerfumes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [lang, setLang] = useState("ku");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [langMenuOpen, setLangMenuOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [user, setUser] = useState(null);
@@ -36,6 +39,7 @@ export default function Home() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [memberCount, setMemberCount] = useState(null);
   const menuRef = useRef(null);
+  const langMenuRef = useRef(null);
 
   const [gender, setGender] = useState("all");
   const [brand, setBrand] = useState("all");
@@ -57,6 +61,9 @@ export default function Home() {
     function handleClickOutside(e) {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
         setMenuOpen(false);
+      }
+      if (langMenuRef.current && !langMenuRef.current.contains(e.target)) {
+        setLangMenuOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -143,24 +150,52 @@ export default function Home() {
     <div dir={t.dir}>
       {/* Header */}
       <header className="header">
-        <div style={{ display: "flex", alignItems: "center", gap: "0.8rem" }}>
-          <div className="logo">{t.title}</div>
+        <div className="logo">{t.title}</div>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+
+          {/* Language icon + dropdown */}
+          <div ref={langMenuRef} style={{ position: "relative" }}>
+            <button
+              className="menu-icon-btn"
+              onClick={() => setLangMenuOpen(!langMenuOpen)}
+              style={{ fontSize: "1.3rem" }}
+            >
+              🌐
+            </button>
+            {langMenuOpen && (
+              <div className="dropdown-menu" style={{ minWidth: "140px", padding: "0.5rem" }}>
+                {["ku", "ar", "en"].map((code) => (
+                  <button
+                    key={code}
+                    onClick={() => { setLang(code); setLangMenuOpen(false); }}
+                    className="dropdown-link"
+                    style={{
+                      background: lang === code ? "var(--background)" : "none",
+                      border: "none",
+                      width: "100%",
+                      textAlign: "center",
+                      fontWeight: lang === code ? "bold" : "normal",
+                    }}
+                  >
+                    {LANG_LABELS[code]}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Member count */}
           {memberCount !== null && (
             <span style={{
               display: "flex", alignItems: "center", gap: "0.3rem",
               fontSize: "0.8rem", color: "#8a7a5c", background: "var(--background)",
-              padding: "0.25rem 0.6rem", borderRadius: "20px",
+              padding: "0.25rem 0.6rem", borderRadius: "20px", whiteSpace: "nowrap",
             }}>
-              👥 {memberCount}
+              👥 {memberCount} {t.members}
             </span>
           )}
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          <div className="lang-switcher">
-            <button className={`lang-btn ${lang === "ku" ? "active" : ""}`} onClick={() => setLang("ku")}>KU</button>
-            <button className={`lang-btn ${lang === "ar" ? "active" : ""}`} onClick={() => setLang("ar")}>AR</button>
-            <button className={`lang-btn ${lang === "en" ? "active" : ""}`} onClick={() => setLang("en")}>EN</button>
-          </div>
+
+          {/* Profile icon */}
           <div ref={menuRef} style={{ position: "relative" }}>
             <button className="menu-icon-btn" onClick={() => setMenuOpen(!menuOpen)}>
               {profile?.avatar_url ? (

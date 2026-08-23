@@ -9,7 +9,7 @@ export const translations = {
     gender: "ڕەگەز", brand: "براند", season: "وەرز", longevity: "بەردەوامی", notes: "تێکەڵەی بۆن",
     all: "هەموو", men: "پیاوان", women: "ژنان", unisex: "هەردووک",
     apply: "جێبەجێکردن", clear: "سڕینەوە",
-    noResults: "هیچ بۆنێک نەدۆزرایەوە",
+    noResults: "هیچ بۆنێک نەدۆزرایەوە",members: "ئەندامان",
     seasons: { Summer: "هاوین", Winter: "زستان", Spring: "بەهار", Fall: "پاییز" },
     longevityLevels: {
       Weak: "کەم", Moderate: "مامناوەند",
@@ -62,7 +62,7 @@ export const translations = {
     gender: "الجنس", brand: "الماركة", season: "الموسم", longevity: "الثبات", notes: "نوتات العطر",
     all: "الكل", men: "رجالي", women: "نسائي", unisex: "للجنسين",
     apply: "تطبيق", clear: "مسح",
-    noResults: "لم يتم العثور على عطور",
+    noResults: "لم يتم العثور على عطور",members: "الأعضاء",
     seasons: { Summer: "الصيف", Winter: "الشتاء", Spring: "الربيع", Fall: "الخريف" },
     longevityLevels: {
       Weak: "ضعيف", Moderate: "متوسط",
@@ -115,7 +115,7 @@ export const translations = {
     gender: "Gender", brand: "Brand", season: "Season", longevity: "Longevity", notes: "Scent Notes",
     all: "All", men: "Men", women: "Women", unisex: "Unisex",
     apply: "Apply", clear: "Clear all",
-    noResults: "No perfumes found",
+    noResults: "No perfumes found",members: "Members",
     seasons: { Summer: "Summer", Winter: "Winter", Spring: "Spring", Fall: "Fall" },
     longevityLevels: {
       Weak: "Weak", Moderate: "Moderate",
