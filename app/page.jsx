@@ -210,7 +210,7 @@ export default function Home() {
             <div className="perfume-info">
               <h3>{p.name}</h3>
               <p className="brand">{p.brand}</p>
-              <span className="gender-tag">{p.gender}</span>
+              <span className="gender-tag">{t[p.gender] || p.gender}</span>
             </div>
           </Link>
         ))}
