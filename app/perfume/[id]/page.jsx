@@ -5,6 +5,13 @@ import { useParams } from "next/navigation";
 import { supabase } from "../../lib/supabase";
 import { translations } from "../../lib/translations";
 
+const SEASON_ICONS = {
+  Summer: "☀️",
+  Winter: "❄️",
+  Spring: "🌸",
+  Fall: "🍂",
+};
+
 export default function PerfumeDetail() {
   const { id } = useParams();
   const [perfume, setPerfume] = useState(null);
@@ -15,6 +22,7 @@ export default function PerfumeDetail() {
   const [showLoginWarning, setShowLoginWarning] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [lang, setLang] = useState("ku");
+  const [mySeasonPick, setMySeasonPick] = useState(null);
 
   const t = translations[lang];
 
@@ -63,6 +71,20 @@ export default function PerfumeDetail() {
     checkFavorite();
   }, [user, id]);
 
+  useEffect(() => {
+    async function fetchSeasonPick() {
+      if (!user || !id) return;
+      const { data } = await supabase
+        .from("season_preferences")
+        .select("season")
+        .eq("user_id", user.id)
+        .eq("perfume_id", id)
+        .maybeSingle();
+      setMySeasonPick(data?.season ?? null);
+    }
+    fetchSeasonPick();
+  }, [user, id]);
+
   async function toggleFavorite() {
     if (!user) {
       setShowLoginWarning(true);
@@ -78,6 +100,20 @@ export default function PerfumeDetail() {
     }
   }
 
+  async function pickSeason(season) {
+    if (!user) {
+      setShowLoginWarning(true);
+      setTimeout(() => setShowLoginWarning(false), 3000);
+      return;
+    }
+    await supabase.from("season_preferences").upsert({
+      user_id: user.id,
+      perfume_id: id,
+      season,
+    }, { onConflict: "user_id,perfume_id" });
+    setMySeasonPick(season);
+  }
+
   async function handleDelete() {
     const confirmed = window.confirm("Are you sure you want to delete this perfume? This cannot be undone.");
     if (!confirmed) return;
@@ -91,6 +127,7 @@ export default function PerfumeDetail() {
   if (!perfume) return <p style={{ textAlign: "center", padding: "3rem" }}>{t.notFound}</p>;
 
   const whatsappLink = "https://wa.me/qr/25WLADJ7BJBLC1";
+  const perfumeSeasons = perfume.season ? perfume.season.split(",").map((s) => s.trim()) : [];
 
   return (
     <div dir={t.dir} style={{ maxWidth: "700px", margin: "0 auto", padding: "2rem 1.5rem" }}>
@@ -148,7 +185,7 @@ export default function PerfumeDetail() {
         </p>
       )}
 
-      <div style={{ display: "grid", gap: "1rem", marginBottom: "2rem" }}>
+      <div style={{ display: "grid", gap: "1rem", marginBottom: "1.5rem" }}>
         <div>
           <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase" }}>{t.topNotes}</h4>
           <p>{perfume.top_notes?.split(",").map((n) => t.notesList[n.trim()] || n.trim()).join(", ")}</p>
@@ -163,11 +200,26 @@ export default function PerfumeDetail() {
         </div>
         <div>
           <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase" }}>{t.season}</h4>
-          <p>{t.seasons[perfume.season] || perfume.season}</p>
+          <p>{perfumeSeasons.map((s) => t.seasons[s] || s).join(", ")}</p>
         </div>
         <div>
           <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase" }}>{t.longevity}</h4>
           <p>{t.longevityLevels[perfume.longevity] || perfume.longevity}</p>
+        </div>
+      </div>
+
+      <div style={{ marginBottom: "2rem" }}>
+        <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase", marginBottom: "0.6rem" }}>{t.seasonPreference}</h4>
+        <div className="chip-row">
+          {["Summer", "Winter", "Spring", "Fall"].map((s) => (
+            <button
+              key={s}
+              onClick={() => pickSeason(s)}
+              className={`chip ${mySeasonPick === s ? "active" : ""}`}
+            >
+              {SEASON_ICONS[s]} {t.seasons[s]}
+            </button>
+          ))}
         </div>
       </div>
 

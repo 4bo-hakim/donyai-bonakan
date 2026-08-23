@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { supabase } from "../lib/supabase";
 import { translations } from "../lib/translations";
 
@@ -30,7 +30,7 @@ export default function AdminPage() {
   const [name, setName] = useState("");
   const [brand, setBrand] = useState("");
   const [gender, setGender] = useState("unisex");
-  const [season, setSeason] = useState("Summer");
+  const [seasons, setSeasons] = useState([]);
   const [longevity, setLongevity] = useState("Moderate");
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -40,7 +40,6 @@ export default function AdminPage() {
   const [baseNotes, setBaseNotes] = useState([]);
 
   const [saving, setSaving] = useState(false);
-  const [savedMsg, setSavedMsg] = useState(false);
 
   const t = translations[lang];
 
@@ -68,8 +67,18 @@ export default function AdminPage() {
     checkAdmin();
   }, []);
 
+  const sortedNotes = useMemo(() => {
+    return [...NOTES_LIST].sort((a, b) =>
+      t.notesList[a].localeCompare(t.notesList[b])
+    );
+  }, [lang]);
+
   function toggleNote(list, setList, note) {
     setList((prev) => prev.includes(note) ? prev.filter((n) => n !== note) : [...prev, note]);
+  }
+
+  function toggleSeason(s) {
+    setSeasons((prev) => prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]);
   }
 
   function handleImageChange(e) {
@@ -107,16 +116,11 @@ export default function AdminPage() {
       top_notes: topNotes.join(", "),
       middle_notes: middleNotes.join(", "),
       base_notes: baseNotes.join(", "),
-      season,
+      season: seasons.join(", "),
       longevity,
     });
 
-    setSaving(false);
-    setSavedMsg(true);
-    setName(""); setBrand("");
-    setTopNotes([]); setMiddleNotes([]); setBaseNotes([]);
-    setImageFile(null); setImagePreview(null);
-    setTimeout(() => setSavedMsg(false), 3000);
+    window.location.href = "/";
   }
 
   if (!checkedAuth) return <p style={{ textAlign: "center", padding: "3rem" }}>...</p>;
@@ -165,12 +169,14 @@ export default function AdminPage() {
         </div>
 
         <div>
-          <label style={{ display: "block", marginBottom: "0.4rem", fontWeight: "bold" }}>{t.season}</label>
-          <select className="search-input" value={season} onChange={(e) => setSeason(e.target.value)}>
+          <h4 style={{ marginBottom: "0.5rem" }}>{t.season}</h4>
+          <div className="chip-row">
             {["Summer", "Winter", "Spring", "Fall"].map((s) => (
-              <option key={s} value={s}>{t.seasons[s]}</option>
+              <button type="button" key={s} className={`chip ${seasons.includes(s) ? "active" : ""}`} onClick={() => toggleSeason(s)}>
+                {t.seasons[s]}
+              </button>
             ))}
-          </select>
+          </div>
         </div>
 
         <div>
@@ -185,7 +191,7 @@ export default function AdminPage() {
         <div>
           <h4 style={{ marginBottom: "0.5rem" }}>{t.topNotesSection}</h4>
           <div className="chip-row">
-            {NOTES_LIST.map((n) => (
+            {sortedNotes.map((n) => (
               <button type="button" key={n} className={`chip ${topNotes.includes(n) ? "active" : ""}`} onClick={() => toggleNote(topNotes, setTopNotes, n)}>
                 {t.notesList[n]}
               </button>
@@ -196,7 +202,7 @@ export default function AdminPage() {
         <div>
           <h4 style={{ marginBottom: "0.5rem" }}>{t.middleNotesSection}</h4>
           <div className="chip-row">
-            {NOTES_LIST.map((n) => (
+            {sortedNotes.map((n) => (
               <button type="button" key={n} className={`chip ${middleNotes.includes(n) ? "active" : ""}`} onClick={() => toggleNote(middleNotes, setMiddleNotes, n)}>
                 {t.notesList[n]}
               </button>
@@ -207,7 +213,7 @@ export default function AdminPage() {
         <div>
           <h4 style={{ marginBottom: "0.5rem" }}>{t.baseNotesSection}</h4>
           <div className="chip-row">
-            {NOTES_LIST.map((n) => (
+            {sortedNotes.map((n) => (
               <button type="button" key={n} className={`chip ${baseNotes.includes(n) ? "active" : ""}`} onClick={() => toggleNote(baseNotes, setBaseNotes, n)}>
                 {t.notesList[n]}
               </button>
@@ -218,8 +224,6 @@ export default function AdminPage() {
         <button type="submit" className="btn-primary" disabled={saving}>
           {saving ? t.saving : t.save}
         </button>
-
-        {savedMsg && <p style={{ textAlign: "center", color: "green" }}>✓ {t.saved}</p>}
       </form>
     </div>
   );

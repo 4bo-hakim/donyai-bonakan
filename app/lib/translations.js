@@ -49,6 +49,7 @@ export const translations = {
     uploadImage: "وێنە بارکردن", selectNotes: "تێکەڵەکان هەڵبژێرە", topNotesSection: "بۆنی سەرەکی",
     middleNotesSection: "بۆنی ناوەڕاست", baseNotesSection: "بۆنی بنەڕەت", save: "پاشەکەوتکردن",
     notAdmin: "ڕێگەت پێنەدراوە بۆ ئەم پەڕەیە", saving: "پاشەکەوت دەکرێت...", saved: "بۆنەکە زیادکرا!",
+    seasonPreference: "کام وەرزدا گونجاوترینە بۆ ئەم بۆنە؟",
   },
   ar: {
     dir: "rtl",
@@ -100,6 +101,7 @@ export const translations = {
     uploadImage: "رفع صورة", selectNotes: "اختر النوتات", topNotesSection: "المقدمة",
     middleNotesSection: "قلب العطر", baseNotesSection: "القاعدة", save: "حفظ",
     notAdmin: "غير مسموح لك بالوصول لهذه الصفحة", saving: "جارٍ الحفظ...", saved: "تمت إضافة العطر!",
+    seasonPreference: "ما هو أنسب موسم لهذا العطر؟",
   },
   en: {
     dir: "ltr",
@@ -151,5 +153,6 @@ export const translations = {
     uploadImage: "Upload Image", selectNotes: "Select Notes", topNotesSection: "Top Notes",
     middleNotesSection: "Middle Notes", baseNotesSection: "Base Notes", save: "Save",
     notAdmin: "You are not authorized to view this page", saving: "Saving...", saved: "Perfume added!",
+    seasonPreference: "Which season suits this perfume best for you?",
   },
 };
