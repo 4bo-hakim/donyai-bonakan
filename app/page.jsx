@@ -33,6 +33,8 @@ export default function Home() {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [search, setSearch] = useState("");
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [memberCount, setMemberCount] = useState(null);
   const menuRef = useRef(null);
 
   const [gender, setGender] = useState("all");
@@ -59,6 +61,22 @@ export default function Home() {
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    function handleScroll() {
+      setShowScrollTop(window.scrollY > 400);
+    }
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    async function fetchMemberCount() {
+      const { data, error } = await supabase.rpc("get_member_count");
+      if (!error) setMemberCount(data);
+    }
+    fetchMemberCount();
   }, []);
 
   useEffect(() => {
@@ -125,7 +143,18 @@ export default function Home() {
     <div dir={t.dir}>
       {/* Header */}
       <header className="header">
-        <div className="logo">{t.title}</div>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.8rem" }}>
+          <div className="logo">{t.title}</div>
+          {memberCount !== null && (
+            <span style={{
+              display: "flex", alignItems: "center", gap: "0.3rem",
+              fontSize: "0.8rem", color: "#8a7a5c", background: "var(--background)",
+              padding: "0.25rem 0.6rem", borderRadius: "20px",
+            }}>
+              👥 {memberCount}
+            </span>
+          )}
+        </div>
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
           <div className="lang-switcher">
             <button className={`lang-btn ${lang === "ku" ? "active" : ""}`} onClick={() => setLang("ku")}>KU</button>
@@ -283,6 +312,30 @@ export default function Home() {
             </div>
           </div>
         </div>
+      )}
+
+      {showScrollTop && (
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          style={{
+            position: "fixed",
+            bottom: "2rem",
+            right: t.dir === "rtl" ? "auto" : "1.5rem",
+            left: t.dir === "rtl" ? "1.5rem" : "auto",
+            background: "var(--black)",
+            color: "white",
+            border: "none",
+            borderRadius: "50%",
+            width: "48px",
+            height: "48px",
+            fontSize: "1.3rem",
+            cursor: "pointer",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+            zIndex: 100,
+          }}
+        >
+          ↑
+        </button>
       )}
 
       {authOpen && <AuthModal onClose={() => setAuthOpen(false)} t={t} />}
