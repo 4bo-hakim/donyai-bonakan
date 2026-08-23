@@ -5,12 +5,9 @@ import { useParams } from "next/navigation";
 import { supabase } from "../../lib/supabase";
 import { translations } from "../../lib/translations";
 
-const SEASON_ICONS = {
-  Summer: "☀️",
-  Winter: "❄️",
-  Spring: "🌸",
-  Fall: "🍂",
-};
+const SEASON_ICONS = { Summer: "☀️", Winter: "❄️", Spring: "🌸", Fall: "🍂" };
+const SEASON_COLORS = { Summer: "#f87171", Winter: "#38bdf8", Spring: "#4ade80", Fall: "#fb923c" };
+const SEASON_LIST = ["Winter", "Spring", "Summer", "Fall"];
 
 export default function PerfumeDetail() {
   const { id } = useParams();
@@ -22,7 +19,8 @@ export default function PerfumeDetail() {
   const [showLoginWarning, setShowLoginWarning] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [lang, setLang] = useState("ku");
-  const [mySeasonPick, setMySeasonPick] = useState(null);
+  const [myPicks, setMyPicks] = useState([]);
+  const [seasonCounts, setSeasonCounts] = useState({ Summer: 0, Winter: 0, Spring: 0, Fall: 0 });
 
   const t = translations[lang];
 
@@ -71,18 +69,31 @@ export default function PerfumeDetail() {
     checkFavorite();
   }, [user, id]);
 
-  useEffect(() => {
-    async function fetchSeasonPick() {
-      if (!user || !id) return;
-      const { data } = await supabase
+  async function fetchSeasonData() {
+    if (!id) return;
+    const { data: allVotes } = await supabase
+      .from("season_preferences")
+      .select("season")
+      .eq("perfume_id", id);
+
+    const counts = { Summer: 0, Winter: 0, Spring: 0, Fall: 0 };
+    (allVotes || []).forEach((v) => {
+      if (counts[v.season] !== undefined) counts[v.season]++;
+    });
+    setSeasonCounts(counts);
+
+    if (user) {
+      const { data: mine } = await supabase
         .from("season_preferences")
         .select("season")
-        .eq("user_id", user.id)
         .eq("perfume_id", id)
-        .maybeSingle();
-      setMySeasonPick(data?.season ?? null);
+        .eq("user_id", user.id);
+      setMyPicks((mine || []).map((r) => r.season));
     }
-    fetchSeasonPick();
+  }
+
+  useEffect(() => {
+    fetchSeasonData();
   }, [user, id]);
 
   async function toggleFavorite() {
@@ -100,18 +111,19 @@ export default function PerfumeDetail() {
     }
   }
 
-  async function pickSeason(season) {
+  async function toggleSeasonPick(season) {
     if (!user) {
       setShowLoginWarning(true);
       setTimeout(() => setShowLoginWarning(false), 3000);
       return;
     }
-    await supabase.from("season_preferences").upsert({
-      user_id: user.id,
-      perfume_id: id,
-      season,
-    }, { onConflict: "user_id,perfume_id" });
-    setMySeasonPick(season);
+    if (myPicks.includes(season)) {
+      await supabase.from("season_preferences").delete()
+        .eq("user_id", user.id).eq("perfume_id", id).eq("season", season);
+    } else {
+      await supabase.from("season_preferences").insert({ user_id: user.id, perfume_id: id, season });
+    }
+    fetchSeasonData();
   }
 
   async function handleDelete() {
@@ -128,18 +140,15 @@ export default function PerfumeDetail() {
 
   const whatsappLink = "https://wa.me/qr/25WLADJ7BJBLC1";
   const perfumeSeasons = perfume.season ? perfume.season.split(",").map((s) => s.trim()) : [];
+  const maxCount = Math.max(...Object.values(seasonCounts), 1);
 
   return (
     <div dir={t.dir} style={{ maxWidth: "700px", margin: "0 auto", padding: "2rem 1.5rem" }}>
       <a href="/" style={{ display: "inline-block", marginBottom: "1.5rem", color: "var(--black)", fontWeight: "bold" }}>← {t.back}</a>
 
       <div style={{
-        width: "100%",
-        aspectRatio: "1",
-        maxWidth: "320px",
-        margin: "0 auto 1.5rem auto",
-        borderRadius: "16px",
-        overflow: "hidden",
+        width: "100%", aspectRatio: "1", maxWidth: "320px", margin: "0 auto 1.5rem auto",
+        borderRadius: "16px", overflow: "hidden",
         background: "linear-gradient(135deg, #f0e6d2, #d9c9a3)",
       }}>
         {perfume.image_url && (
@@ -156,14 +165,11 @@ export default function PerfumeDetail() {
       <button
         onClick={toggleFavorite}
         style={{
-          display: "block",
-          margin: "0 auto 0.8rem auto",
+          display: "block", margin: "0 auto 0.8rem auto",
           background: isFavorite ? "var(--gold)" : "white",
           color: isFavorite ? "white" : "var(--black)",
-          border: "1px solid var(--border)",
-          borderRadius: "30px",
-          padding: "0.7rem 1.5rem",
-          fontSize: "0.95rem",
+          border: "1px solid var(--border)", borderRadius: "30px",
+          padding: "0.7rem 1.5rem", fontSize: "0.95rem",
         }}
       >
         {isFavorite ? `★ ${t.addedFavorite}` : `☆ ${t.addFavorite}`}
@@ -171,15 +177,9 @@ export default function PerfumeDetail() {
 
       {showLoginWarning && (
         <p style={{
-          textAlign: "center",
-          color: "#b8860b",
-          background: "#fff8e6",
-          border: "1px solid #f0d98c",
-          borderRadius: "10px",
-          padding: "0.6rem 1rem",
-          margin: "0 auto 1.2rem auto",
-          maxWidth: "320px",
-          fontSize: "0.9rem",
+          textAlign: "center", color: "#b8860b", background: "#fff8e6",
+          border: "1px solid #f0d98c", borderRadius: "10px", padding: "0.6rem 1rem",
+          margin: "0 auto 1.2rem auto", maxWidth: "320px", fontSize: "0.9rem",
         }}>
           ⚠️ {t.loginFirst}
         </p>
@@ -209,17 +209,37 @@ export default function PerfumeDetail() {
       </div>
 
       <div style={{ marginBottom: "2rem" }}>
-        <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase", marginBottom: "0.6rem" }}>{t.seasonPreference}</h4>
-        <div className="chip-row">
-          {["Summer", "Winter", "Spring", "Fall"].map((s) => (
-            <button
-              key={s}
-              onClick={() => pickSeason(s)}
-              className={`chip ${mySeasonPick === s ? "active" : ""}`}
-            >
-              {SEASON_ICONS[s]} {t.seasons[s]}
-            </button>
-          ))}
+        <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase", marginBottom: "1rem" }}>{t.seasonPreference}</h4>
+        <div style={{ display: "flex", justifyContent: "space-between", gap: "0.8rem" }}>
+          {SEASON_LIST.map((s) => {
+            const isPicked = myPicks.includes(s);
+            const barWidth = (seasonCounts[s] / maxCount) * 100;
+            return (
+              <button
+                key={s}
+                onClick={() => toggleSeasonPick(s)}
+                style={{
+                  flex: 1,
+                  background: "none",
+                  border: isPicked ? `2px solid ${SEASON_COLORS[s]}` : "1px solid var(--border)",
+                  borderRadius: "12px",
+                  padding: "0.8rem 0.4rem",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "0.4rem",
+                  cursor: "pointer",
+                }}
+              >
+                <span style={{ fontSize: "1.6rem" }}>{SEASON_ICONS[s]}</span>
+                <span style={{ fontSize: "0.8rem", color: "var(--black)" }}>{t.seasons[s]}</span>
+                <div style={{ width: "100%", height: "6px", background: "#eee", borderRadius: "4px", overflow: "hidden" }}>
+                  <div style={{ width: `${barWidth}%`, height: "100%", background: SEASON_COLORS[s] }} />
+                </div>
+                <span style={{ fontSize: "0.8rem", fontWeight: "bold", color: SEASON_COLORS[s] }}>{seasonCounts[s]}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -229,12 +249,8 @@ export default function PerfumeDetail() {
             onClick={handleDelete}
             disabled={deleting}
             style={{
-              background: "#fee2e2",
-              color: "#b91c1c",
-              border: "1px solid #fca5a5",
-              borderRadius: "20px",
-              padding: "0.5rem 1.2rem",
-              fontSize: "0.85rem",
+              background: "#fee2e2", color: "#b91c1c", border: "1px solid #fca5a5",
+              borderRadius: "20px", padding: "0.5rem 1.2rem", fontSize: "0.85rem",
             }}
           >
             🗑 {deleting ? "Deleting..." : "Delete Perfume"}
@@ -248,15 +264,9 @@ export default function PerfumeDetail() {
           target="_blank"
           rel="noopener noreferrer"
           style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "0.6rem",
-            background: "#25D366",
-            color: "white",
-            padding: "0.9rem 1.6rem",
-            borderRadius: "30px",
-            fontSize: "1rem",
-            fontWeight: "bold",
+            display: "inline-flex", alignItems: "center", gap: "0.6rem",
+            background: "#25D366", color: "white", padding: "0.9rem 1.6rem",
+            borderRadius: "30px", fontSize: "1rem", fontWeight: "bold",
           }}
         >
           📱 {t.orderButton}
