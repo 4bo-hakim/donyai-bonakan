@@ -139,7 +139,6 @@ export default function PerfumeDetail() {
   if (!perfume) return <p style={{ textAlign: "center", padding: "3rem" }}>{t.notFound}</p>;
 
   const whatsappLink = "https://wa.me/qr/25WLADJ7BJBLC1";
-  const perfumeSeasons = perfume.season ? perfume.season.split(",").map((s) => s.trim()) : [];
   const maxCount = Math.max(...Object.values(seasonCounts), 1);
 
   return (
@@ -199,10 +198,6 @@ export default function PerfumeDetail() {
           <p>{perfume.base_notes?.split(",").map((n) => t.notesList[n.trim()] || n.trim()).join(", ")}</p>
         </div>
         <div>
-          <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase" }}>{t.season}</h4>
-          <p>{perfumeSeasons.map((s) => t.seasons[s] || s).join(", ")}</p>
-        </div>
-        <div>
           <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase" }}>{t.longevity}</h4>
           <p>{t.longevityLevels[perfume.longevity] || perfume.longevity}</p>
         </div>
@@ -259,7 +254,7 @@ export default function PerfumeDetail() {
       )}
 
       <div style={{ textAlign: "center", paddingBottom: "3rem" }}>
-          <a
+           <a
           href={whatsappLink}
           target="_blank"
           rel="noopener noreferrer"

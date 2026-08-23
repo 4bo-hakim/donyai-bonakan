@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import Link from "next/link";
 import { supabase } from "./lib/supabase";
 import { translations } from "./lib/translations";
@@ -33,10 +33,10 @@ export default function Home() {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [search, setSearch] = useState("");
+  const menuRef = useRef(null);
 
   const [gender, setGender] = useState("all");
   const [brand, setBrand] = useState("all");
-  const [season, setSeason] = useState("all");
   const [longevity, setLongevity] = useState("all");
   const [notes, setNotes] = useState([]);
 
@@ -50,6 +50,16 @@ export default function Home() {
   useEffect(() => {
     localStorage.setItem("siteLang", lang);
   }, [lang]);
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     async function fetchPerfumes() {
@@ -93,7 +103,6 @@ export default function Home() {
     if (search && !`${p.name} ${p.brand}`.toLowerCase().includes(search.toLowerCase())) return false;
     if (gender !== "all" && p.gender !== gender) return false;
     if (brand !== "all" && p.brand !== brand) return false;
-    if (season !== "all" && p.season !== season) return false;
     if (longevity !== "all" && p.longevity !== longevity) return false;
     if (notes.length > 0) {
       const allNotes = `${p.top_notes} ${p.middle_notes} ${p.base_notes}`.toLowerCase();
@@ -102,14 +111,14 @@ export default function Home() {
     return true;
   });
 
-  const activeFilterCount = [gender, brand, season, longevity].filter((v) => v !== "all").length + (notes.length > 0 ? 1 : 0);
+  const activeFilterCount = [gender, brand, longevity].filter((v) => v !== "all").length + (notes.length > 0 ? 1 : 0);
 
   function toggleNote(note) {
     setNotes((prev) => prev.includes(note) ? prev.filter((n) => n !== note) : [...prev, note]);
   }
 
   function clearFilters() {
-    setGender("all"); setBrand("all"); setSeason("all"); setLongevity("all"); setNotes([]);
+    setGender("all"); setBrand("all"); setLongevity("all"); setNotes([]);
   }
 
   return (
@@ -123,56 +132,59 @@ export default function Home() {
             <button className={`lang-btn ${lang === "ar" ? "active" : ""}`} onClick={() => setLang("ar")}>AR</button>
             <button className={`lang-btn ${lang === "en" ? "active" : ""}`} onClick={() => setLang("en")}>EN</button>
           </div>
-          <button className="menu-icon-btn" onClick={() => setMenuOpen(!menuOpen)}>
-            {profile?.avatar_url ? (
-              <img
-                src={profile.avatar_url}
-                alt="Profile"
-                style={{ width: "36px", height: "36px", borderRadius: "50%", objectFit: "cover" }}
-              />
-            ) : (
-              <div className="profile-circle" style={{ width: "36px", height: "36px", fontSize: "1rem", margin: 0 }}>
-                {user ? user.email[0].toUpperCase() : "👤"}
+          <div ref={menuRef} style={{ position: "relative" }}>
+            <button className="menu-icon-btn" onClick={() => setMenuOpen(!menuOpen)}>
+              {profile?.avatar_url ? (
+                <img
+                  src={profile.avatar_url}
+                  alt="Profile"
+                  style={{ width: "36px", height: "36px", borderRadius: "50%", objectFit: "cover" }}
+                />
+              ) : (
+                <div className="profile-circle" style={{ width: "36px", height: "36px", fontSize: "1rem", margin: 0 }}>
+                  {user ? user.email[0].toUpperCase() : "👤"}
+                </div>
+              )}
+            </button>
+
+            {menuOpen && (
+              <div className="dropdown-menu">
+                <div className="profile-circle">
+                  {profile?.avatar_url ? (
+                    <img src={profile.avatar_url} alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }} />
+                  ) : user ? (
+                    user.email[0].toUpperCase()
+                  ) : "?"}
+                </div>
+                {user ? (
+                  <>
+                    <p style={{ fontSize: "0.85rem", marginBottom: "0.5rem", wordBreak: "break-all" }}>{user.email}</p>
+                    <a href="/favorites" className="dropdown-link">❤️ {t.myFavorites}</a>
+                    {profile?.is_admin && (
+                      <a href="/admin" className="dropdown-link">🛠 Admin Panel</a>
+                    )}
+                    <button
+                      className="dropdown-link"
+                      style={{ background: "none", border: "none", width: "100%" }}
+                      onClick={() => { supabase.auth.signOut(); setMenuOpen(false); }}
+                    >
+                      Log out
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    className="dropdown-link"
+                    style={{ background: "none", border: "none", width: "100%" }}
+                    onClick={() => { setAuthOpen(true); setMenuOpen(false); }}
+                  >
+                    {t.login}
+                  </button>
+                )}
               </div>
             )}
-          </button>
+          </div>
         </div>
       </header>
-
-      {menuOpen && (
-        <div className="dropdown-menu">
-          <div className="profile-circle">
-            {profile?.avatar_url ? (
-              <img src={profile.avatar_url} alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }} />
-            ) : user ? (
-              user.email[0].toUpperCase()
-            ) : "?"}
-          </div>
-          {user ? (
-            <>
-              <p style={{ fontSize: "0.85rem", marginBottom: "0.5rem", wordBreak: "break-all" }}>{user.email}</p>
-              {profile?.is_admin && (
-                <a href="/admin" className="dropdown-link">🛠 Admin Panel</a>
-              )}
-              <button
-                className="dropdown-link"
-                style={{ background: "none", border: "none", width: "100%" }}
-                onClick={() => { supabase.auth.signOut(); setMenuOpen(false); }}
-              >
-                Log out
-              </button>
-            </>
-          ) : (
-            <button
-              className="dropdown-link"
-              style={{ background: "none", border: "none", width: "100%" }}
-              onClick={() => { setAuthOpen(true); setMenuOpen(false); }}
-            >
-              {t.login}
-            </button>
-          )}
-        </div>
-      )}
 
       {/* Hero */}
       <div className="hero">
@@ -240,17 +252,6 @@ export default function Home() {
                 <button className={`chip ${brand === "all" ? "active" : ""}`} onClick={() => setBrand("all")}>{t.all}</button>
                 {brands.map((b) => (
                   <button key={b} className={`chip ${brand === b ? "active" : ""}`} onClick={() => setBrand(b)}>{b}</button>
-                ))}
-              </div>
-            </div>
-
-            <div className="filter-group">
-              <h4>{t.season}</h4>
-              <div className="chip-row">
-                {["all", "Summer", "Winter", "Spring", "Fall"].map((s) => (
-                  <button key={s} className={`chip ${season === s ? "active" : ""}`} onClick={() => setSeason(s)}>
-                    {s === "all" ? t.all : t.seasons[s]}
-                  </button>
                 ))}
               </div>
             </div>

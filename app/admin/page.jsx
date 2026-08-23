@@ -30,7 +30,6 @@ export default function AdminPage() {
   const [name, setName] = useState("");
   const [brand, setBrand] = useState("");
   const [gender, setGender] = useState("unisex");
-  const [seasons, setSeasons] = useState([]);
   const [longevity, setLongevity] = useState("Moderate");
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -77,10 +76,6 @@ export default function AdminPage() {
     setList((prev) => prev.includes(note) ? prev.filter((n) => n !== note) : [...prev, note]);
   }
 
-  function toggleSeason(s) {
-    setSeasons((prev) => prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]);
-  }
-
   function handleImageChange(e) {
     const file = e.target.files[0];
     if (file) {
@@ -116,7 +111,7 @@ export default function AdminPage() {
       top_notes: topNotes.join(", "),
       middle_notes: middleNotes.join(", "),
       base_notes: baseNotes.join(", "),
-      season: seasons.join(", "),
+      season: "",
       longevity,
     });
 
@@ -166,17 +161,6 @@ export default function AdminPage() {
             <option value="women">{t.women}</option>
             <option value="unisex">{t.unisex}</option>
           </select>
-        </div>
-
-        <div>
-          <h4 style={{ marginBottom: "0.5rem" }}>{t.season}</h4>
-          <div className="chip-row">
-            {["Summer", "Winter", "Spring", "Fall"].map((s) => (
-              <button type="button" key={s} className={`chip ${seasons.includes(s) ? "active" : ""}`} onClick={() => toggleSeason(s)}>
-                {t.seasons[s]}
-              </button>
-            ))}
-          </div>
         </div>
 
         <div>
