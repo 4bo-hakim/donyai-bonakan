@@ -10,8 +10,10 @@ export default function PerfumeDetail() {
   const [perfume, setPerfume] = useState(null);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState(null);
   const [isFavorite, setIsFavorite] = useState(false);
   const [showLoginWarning, setShowLoginWarning] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [lang, setLang] = useState("ku");
 
   const t = translations[lang];
@@ -33,6 +35,19 @@ export default function PerfumeDetail() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setUser(data.session?.user ?? null));
   }, []);
+
+  useEffect(() => {
+    async function fetchProfile() {
+      if (!user) { setProfile(null); return; }
+      const { data } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+      setProfile(data);
+    }
+    fetchProfile();
+  }, [user]);
 
   useEffect(() => {
     async function checkFavorite() {
@@ -61,6 +76,15 @@ export default function PerfumeDetail() {
       await supabase.from("favorites").insert({ user_id: user.id, perfume_id: id });
       setIsFavorite(true);
     }
+  }
+
+  async function handleDelete() {
+    const confirmed = window.confirm("Are you sure you want to delete this perfume? This cannot be undone.");
+    if (!confirmed) return;
+
+    setDeleting(true);
+    await supabase.from("perfumes").delete().eq("id", id);
+    window.location.href = "/";
   }
 
   if (loading) return <p style={{ textAlign: "center", padding: "3rem" }}>{t.loadingText}</p>;
@@ -147,8 +171,27 @@ export default function PerfumeDetail() {
         </div>
       </div>
 
+      {profile?.is_admin && (
+        <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
+          <button
+            onClick={handleDelete}
+            disabled={deleting}
+            style={{
+              background: "#fee2e2",
+              color: "#b91c1c",
+              border: "1px solid #fca5a5",
+              borderRadius: "20px",
+              padding: "0.5rem 1.2rem",
+              fontSize: "0.85rem",
+            }}
+          >
+            🗑 {deleting ? "Deleting..." : "Delete Perfume"}
+          </button>
+        </div>
+      )}
+
       <div style={{ textAlign: "center", paddingBottom: "3rem" }}>
-           <a
+          <a
           href={whatsappLink}
           target="_blank"
           rel="noopener noreferrer"
