@@ -119,15 +119,20 @@ export default function Home() {
     fetchProfile();
   }, [user]);
 
-  const brands = useMemo(
-    () => [...new Set(perfumes.map((p) => p.brand).filter(Boolean))],
-    [perfumes]
-  );
+  const brands = useMemo(() => {
+  const seen = new Map();
+  perfumes.forEach((p) => {
+    if (!p.brand) return;
+    const key = p.brand.trim().toLowerCase();
+    if (!seen.has(key)) seen.set(key, p.brand.trim());
+  });
+  return [...seen.values()];
+}, [perfumes]);
 
   const filtered = perfumes.filter((p) => {
     if (search && !`${p.name} ${p.brand}`.toLowerCase().includes(search.toLowerCase())) return false;
     if (gender !== "all" && p.gender !== gender) return false;
-    if (brand !== "all" && p.brand !== brand) return false;
+    if (brand !== "all" && p.brand?.trim().toLowerCase() !== brand.trim().toLowerCase()) return false;
     if (longevity !== "all" && p.longevity !== longevity) return false;
     if (notes.length > 0) {
       const allNotes = `${p.top_notes} ${p.middle_notes} ${p.base_notes}`.toLowerCase();

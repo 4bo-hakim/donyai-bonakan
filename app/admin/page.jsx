@@ -39,6 +39,18 @@ export default function AdminPage() {
   const [baseNotes, setBaseNotes] = useState([]);
 
   const [saving, setSaving] = useState(false);
+  const [existingBrands, setExistingBrands] = useState([]);
+
+useEffect(() => {
+  async function fetchBrands() {
+    const { data } = await supabase.from("perfumes").select("brand");
+    if (data) {
+      const unique = [...new Set(data.map((p) => p.brand?.trim()).filter(Boolean))];
+      setExistingBrands(unique);
+    }
+  }
+  fetchBrands();
+}, []);
 
   const t = translations[lang];
 
@@ -151,7 +163,10 @@ export default function AdminPage() {
 
         <div>
           <label style={{ display: "block", marginBottom: "0.4rem", fontWeight: "bold" }}>{t.brand}</label>
-          <input className="search-input" value={brand} onChange={(e) => setBrand(e.target.value)} required />
+          <input className="search-input" value={brand} onChange={(e) => setBrand(e.target.value)} required list="brand-suggestions" />
+          <datalist id="brand-suggestions">
+            {existingBrands.map((b) => <option key={b} value={b} />)}
+          </datalist>
         </div>
 
         <div>
