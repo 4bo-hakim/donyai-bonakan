@@ -24,6 +24,17 @@ const NOTES_LIST = [
   "Ginger", "Pink Pepper", "Freesia", "Magnolia", "Water Lily",
   "Marine", "Ozonic", "Pineapple", "Raspberry", "Strawberry",
   "Plum", "Cocoa", "Praline", "Suede", "Birch",
+  "Anise", "Aldehydes", "Apricot", "Bamboo", "Bay Leaf",
+  "Benzoin", "Blackberry", "Blood Orange", "Cade", "Camphor",
+  "Cassis", "Champaca", "Cherry", "Chestnut", "Chocolate",
+  "Cistus", "Clary Sage", "Cognac", "Cucumber", "Currant",
+  "Cypress", "Date", "Dill", "Elemi", "Fir",
+  "Frangipani", "Frankincense", "Galbanum", "Gardenia", "Grape",
+  "Guaiac Wood", "Hay", "Heliotrope", "Hyacinth", "Immortelle",
+  "Juniper Berries", "Kiwi", "Labdanum", "Licorice", "Lily",
+  "Lime", "Lotus", "Mango", "Melon", "Mimosa",
+  "Myrrh", "Narcissus", "Orris", "Osmanthus", "Palo Santo",
+  "Ambergris", "Amber Wood", "Sea Notes",
 ];
 
 export default function PerfumeDetail() {
@@ -44,12 +55,16 @@ export default function PerfumeDetail() {
   const [editBrand, setEditBrand] = useState("");
   const [editGender, setEditGender] = useState("unisex");
   const [editLongevity, setEditLongevity] = useState("Moderate");
+  const [editYear, setEditYear] = useState(new Date().getFullYear());
   const [editTopNotes, setEditTopNotes] = useState([]);
   const [editMiddleNotes, setEditMiddleNotes] = useState([]);
   const [editBaseNotes, setEditBaseNotes] = useState([]);
   const [editImageFile, setEditImageFile] = useState(null);
   const [editImagePreview, setEditImagePreview] = useState(null);
   const [savingEdit, setSavingEdit] = useState(false);
+
+  const currentYear = new Date().getFullYear();
+  const yearOptions = Array.from({ length: currentYear - 1900 + 1 }, (_, i) => currentYear - i);
 
   const t = translations[lang];
 
@@ -174,6 +189,7 @@ export default function PerfumeDetail() {
     setEditBrand(perfume.brand || "");
     setEditGender(perfume.gender || "unisex");
     setEditLongevity(perfume.longevity || "Moderate");
+    setEditYear(perfume.year || currentYear);
     setEditTopNotes(perfume.top_notes ? perfume.top_notes.split(",").map((s) => s.trim()).filter(Boolean) : []);
     setEditMiddleNotes(perfume.middle_notes ? perfume.middle_notes.split(",").map((s) => s.trim()).filter(Boolean) : []);
     setEditBaseNotes(perfume.base_notes ? perfume.base_notes.split(",").map((s) => s.trim()).filter(Boolean) : []);
@@ -217,6 +233,7 @@ export default function PerfumeDetail() {
       brand: editBrand,
       gender: editGender,
       longevity: editLongevity,
+      year: editYear,
       top_notes: editTopNotes.join(", "),
       middle_notes: editMiddleNotes.join(", "),
       base_notes: editBaseNotes.join(", "),
@@ -242,11 +259,20 @@ export default function PerfumeDetail() {
         <>
           <div style={{
             width: "100%", aspectRatio: "1", maxWidth: "320px", margin: "0 auto 1.5rem auto",
-            borderRadius: "16px", overflow: "hidden",
+            borderRadius: "16px", overflow: "hidden", position: "relative",
             background: "linear-gradient(135deg, #f0e6d2, #d9c9a3)",
           }}>
             {perfume.image_url && (
               <img src={perfume.image_url} alt={perfume.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            )}
+            {perfume.year && (
+              <span style={{
+                position: "absolute", bottom: "10px", right: "10px",
+                background: "rgba(0,0,0,0.7)", color: "white",
+                fontSize: "0.85rem", padding: "0.25rem 0.6rem", borderRadius: "8px",
+              }}>
+                {perfume.year}
+              </span>
             )}
           </div>
 
@@ -353,7 +379,7 @@ export default function PerfumeDetail() {
           )}
 
           <div style={{ textAlign: "center", paddingBottom: "3rem" }}>
-            <a
+               <a
               href={whatsappLink}
               target="_blank"
               rel="noopener noreferrer"
@@ -395,6 +421,13 @@ export default function PerfumeDetail() {
               <option value="men">{t.men}</option>
               <option value="women">{t.women}</option>
               <option value="unisex">{t.unisex}</option>
+            </select>
+          </div>
+
+          <div>
+            <label style={{ display: "block", marginBottom: "0.4rem", fontWeight: "bold" }}>{t.year}</label>
+            <select className="search-input" value={editYear} onChange={(e) => setEditYear(Number(e.target.value))}>
+              {yearOptions.map((y) => <option key={y} value={y}>{y}</option>)}
             </select>
           </div>
 

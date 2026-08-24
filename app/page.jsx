@@ -21,6 +21,17 @@ const NOTES_LIST = [
   "Ginger", "Pink Pepper", "Freesia", "Magnolia", "Water Lily",
   "Marine", "Ozonic", "Pineapple", "Raspberry", "Strawberry",
   "Plum", "Cocoa", "Praline", "Suede", "Birch",
+  "Anise", "Aldehydes", "Apricot", "Bamboo", "Bay Leaf",
+  "Benzoin", "Blackberry", "Blood Orange", "Cade", "Camphor",
+  "Cassis", "Champaca", "Cherry", "Chestnut", "Chocolate",
+  "Cistus", "Clary Sage", "Cognac", "Cucumber", "Currant",
+  "Cypress", "Date", "Dill", "Elemi", "Fir",
+  "Frangipani", "Frankincense", "Galbanum", "Gardenia", "Grape",
+  "Guaiac Wood", "Hay", "Heliotrope", "Hyacinth", "Immortelle",
+  "Juniper Berries", "Kiwi", "Labdanum", "Licorice", "Lily",
+  "Lime", "Lotus", "Mango", "Melon", "Mimosa",
+  "Myrrh", "Narcissus", "Orris", "Osmanthus", "Palo Santo",
+  "Ambergris", "Amber Wood", "Sea Notes",
 ];
 
 const LANG_LABELS = { ku: "KU", ar: "AR", en: "EN" };
@@ -120,14 +131,14 @@ export default function Home() {
   }, [user]);
 
   const brands = useMemo(() => {
-  const seen = new Map();
-  perfumes.forEach((p) => {
-    if (!p.brand) return;
-    const key = p.brand.trim().toLowerCase();
-    if (!seen.has(key)) seen.set(key, p.brand.trim());
-  });
-  return [...seen.values()];
-}, [perfumes]);
+    const seen = new Map();
+    perfumes.forEach((p) => {
+      if (!p.brand) return;
+      const key = p.brand.trim().toLowerCase();
+      if (!seen.has(key)) seen.set(key, p.brand.trim());
+    });
+    return [...seen.values()];
+  }, [perfumes]);
 
   const filtered = perfumes.filter((p) => {
     if (search && !`${p.name} ${p.brand}`.toLowerCase().includes(search.toLowerCase())) return false;
@@ -153,12 +164,10 @@ export default function Home() {
 
   return (
     <div dir={t.dir}>
-      {/* Header */}
       <header className="header">
         <div className="logo">{t.title}</div>
         <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
 
-          {/* Language icon + dropdown */}
           <div ref={langMenuRef} style={{ position: "relative" }}>
             <button
               className="menu-icon-btn"
@@ -176,9 +185,7 @@ export default function Home() {
                     className="dropdown-link"
                     style={{
                       background: lang === code ? "var(--background)" : "none",
-                      border: "none",
-                      width: "100%",
-                      textAlign: "center",
+                      border: "none", width: "100%", textAlign: "center",
                       fontWeight: lang === code ? "bold" : "normal",
                     }}
                   >
@@ -189,7 +196,6 @@ export default function Home() {
             )}
           </div>
 
-          {/* Member count */}
           {memberCount !== null && (
             <span style={{
               display: "flex", alignItems: "center", gap: "0.3rem",
@@ -200,7 +206,6 @@ export default function Home() {
             </span>
           )}
 
-          {/* Profile icon */}
           <div ref={menuRef} style={{ position: "relative" }}>
             <button className="menu-icon-btn" onClick={() => setMenuOpen(!menuOpen)}>
               {profile?.avatar_url ? (
@@ -255,13 +260,11 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Hero */}
       <div className="hero">
         <h1>{t.title}</h1>
         <p>{t.subtitle}</p>
       </div>
 
-      {/* Search + Filter */}
       <div className="controls-row">
         <input
           className="search-input"
@@ -274,7 +277,6 @@ export default function Home() {
         </button>
       </div>
 
-      {/* Grid */}
       {loading && <p style={{ textAlign: "center" }}>...</p>}
       {!loading && filtered.length === 0 && (
         <p style={{ textAlign: "center" }}>{t.noResults}</p>
@@ -283,10 +285,19 @@ export default function Home() {
       <div className="perfume-grid">
         {filtered.map((p) => (
           <Link key={p.id} href={`/perfume/${p.id}`} className="perfume-card" style={{ display: "block" }}>
-            <div className="perfume-img">
+            <div className="perfume-img" style={{ position: "relative" }}>
               {p.image_url ? (
                 <img src={p.image_url} alt={p.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               ) : "No Image"}
+              {p.year && (
+                <span style={{
+                  position: "absolute", bottom: "8px", right: "8px",
+                  background: "rgba(0,0,0,0.7)", color: "white",
+                  fontSize: "0.75rem", padding: "0.2rem 0.5rem", borderRadius: "6px",
+                }}>
+                  {p.year}
+                </span>
+              )}
             </div>
             <div className="perfume-info">
               <h3>{p.name}</h3>
@@ -297,7 +308,6 @@ export default function Home() {
         ))}
       </div>
 
-      {/* Filter Drawer */}
       {drawerOpen && (
         <div className="drawer-overlay" onClick={() => setDrawerOpen(false)}>
           <div className="drawer" onClick={(e) => e.stopPropagation()}>

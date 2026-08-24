@@ -19,6 +19,17 @@ const NOTES_LIST = [
   "Ginger", "Pink Pepper", "Freesia", "Magnolia", "Water Lily",
   "Marine", "Ozonic", "Pineapple", "Raspberry", "Strawberry",
   "Plum", "Cocoa", "Praline", "Suede", "Birch",
+  "Anise", "Aldehydes", "Apricot", "Bamboo", "Bay Leaf",
+  "Benzoin", "Blackberry", "Blood Orange", "Cade", "Camphor",
+  "Cassis", "Champaca", "Cherry", "Chestnut", "Chocolate",
+  "Cistus", "Clary Sage", "Cognac", "Cucumber", "Currant",
+  "Cypress", "Date", "Dill", "Elemi", "Fir",
+  "Frangipani", "Frankincense", "Galbanum", "Gardenia", "Grape",
+  "Guaiac Wood", "Hay", "Heliotrope", "Hyacinth", "Immortelle",
+  "Juniper Berries", "Kiwi", "Labdanum", "Licorice", "Lily",
+  "Lime", "Lotus", "Mango", "Melon", "Mimosa",
+  "Myrrh", "Narcissus", "Orris", "Osmanthus", "Palo Santo",
+  "Ambergris", "Amber Wood", "Sea Notes",
 ];
 
 export default function AdminPage() {
@@ -33,24 +44,17 @@ export default function AdminPage() {
   const [longevity, setLongevity] = useState("Moderate");
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [existingBrands, setExistingBrands] = useState([]);
+
+  const currentYear = new Date().getFullYear();
+  const yearOptions = Array.from({ length: currentYear - 1900 + 1 }, (_, i) => currentYear - i);
+  const [year, setYear] = useState(currentYear);
 
   const [topNotes, setTopNotes] = useState([]);
   const [middleNotes, setMiddleNotes] = useState([]);
   const [baseNotes, setBaseNotes] = useState([]);
 
   const [saving, setSaving] = useState(false);
-  const [existingBrands, setExistingBrands] = useState([]);
-
-useEffect(() => {
-  async function fetchBrands() {
-    const { data } = await supabase.from("perfumes").select("brand");
-    if (data) {
-      const unique = [...new Set(data.map((p) => p.brand?.trim()).filter(Boolean))];
-      setExistingBrands(unique);
-    }
-  }
-  fetchBrands();
-}, []);
 
   const t = translations[lang];
 
@@ -76,6 +80,17 @@ useEffect(() => {
       setCheckedAuth(true);
     }
     checkAdmin();
+  }, []);
+
+  useEffect(() => {
+    async function fetchBrands() {
+      const { data } = await supabase.from("perfumes").select("brand");
+      if (data) {
+        const unique = [...new Set(data.map((p) => p.brand?.trim()).filter(Boolean))];
+        setExistingBrands(unique);
+      }
+    }
+    fetchBrands();
   }, []);
 
   const sortedNotes = useMemo(() => {
@@ -125,6 +140,7 @@ useEffect(() => {
       base_notes: baseNotes.join(", "),
       season: "",
       longevity,
+      year,
     });
 
     window.location.href = "/";
@@ -163,7 +179,13 @@ useEffect(() => {
 
         <div>
           <label style={{ display: "block", marginBottom: "0.4rem", fontWeight: "bold" }}>{t.brand}</label>
-          <input className="search-input" value={brand} onChange={(e) => setBrand(e.target.value)} required list="brand-suggestions" />
+          <input
+            className="search-input"
+            value={brand}
+            onChange={(e) => setBrand(e.target.value)}
+            required
+            list="brand-suggestions"
+          />
           <datalist id="brand-suggestions">
             {existingBrands.map((b) => <option key={b} value={b} />)}
           </datalist>
@@ -175,6 +197,13 @@ useEffect(() => {
             <option value="men">{t.men}</option>
             <option value="women">{t.women}</option>
             <option value="unisex">{t.unisex}</option>
+          </select>
+        </div>
+
+        <div>
+          <label style={{ display: "block", marginBottom: "0.4rem", fontWeight: "bold" }}>{t.year}</label>
+          <select className="search-input" value={year} onChange={(e) => setYear(Number(e.target.value))}>
+            {yearOptions.map((y) => <option key={y} value={y}>{y}</option>)}
           </select>
         </div>
 
