@@ -1,4 +1,5 @@
 import "./globals.css";
+import IntroSplash from "./lib/IntroSplash";
 
 export const metadata = {
   title: "دونیای بۆنەکان | World of Scents",
@@ -8,7 +9,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <IntroSplash />
+        {children}
+      </body>
     </html>
   );
 }
