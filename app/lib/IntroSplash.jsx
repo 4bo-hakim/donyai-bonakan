@@ -61,7 +61,7 @@ function ShapeE({ glass, accent, cap }) {
 const SHAPES = [ShapeA, ShapeB, ShapeC, ShapeD, ShapeE];
 
 export default function IntroSplash() {
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
   const [fading, setFading] = useState(false);
   const [lang, setLang] = useState("ku");
 
@@ -75,6 +75,16 @@ export default function IntroSplash() {
       setLang("ku");
       localStorage.setItem("siteLang", "ku");
     }
+
+    // Only play the splash once per browser session (e.g. first visit in
+    // this tab). Navigating between pages, or hitting back/forward, reuses
+    // the same session and should NOT replay it.
+    const shownThisSession = sessionStorage.getItem("introShownThisSession");
+    if (shownThisSession) {
+      return;
+    }
+    sessionStorage.setItem("introShownThisSession", "true");
+    setVisible(true);
 
     const fadeTimer = setTimeout(() => setFading(true), 6400);
     const hideTimer = setTimeout(() => {
