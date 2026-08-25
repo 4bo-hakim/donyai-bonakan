@@ -112,9 +112,9 @@ export default function NoteImagesAdmin() {
   return (
     <div dir={t.dir} style={{ maxWidth: "800px", margin: "0 auto", padding: "2rem 1.5rem" }}>
       <a href="/admin" style={{ display: "inline-block", marginBottom: "1.5rem", color: "var(--black)", fontWeight: "bold" }}>← {t.back}</a>
-      <h1 style={{ marginBottom: "0.3rem" }}>🖼️ Note Images</h1>
+      <h1 style={{ marginBottom: "0.3rem" }}>🖼️ {t.noteImagesTitle}</h1>
       <p style={{ color: "#8a7a5c", marginBottom: "1.5rem", fontSize: "0.9rem" }}>
-        Upload a photo for each scent note. Tap a note's image to replace it.
+        {t.noteImagesDesc}
       </p>
 
       <div style={{

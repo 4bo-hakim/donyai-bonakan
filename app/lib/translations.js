@@ -9,7 +9,8 @@ export const translations = {
     gender: "ڕەگەز", brand: "براند", season: "وەرز", longevity: "بەردەوامی", notes: "تێکەڵەی بۆن",
     all: "هەموو", men: "پیاوان", women: "ژنان", unisex: "هەردووک",
     apply: "جێبەجێکردن", clear: "سڕینەوە",
-    noResults: "هیچ بۆنێک نەدۆزرایەوە",learnMore: "لێرەوە زیاتر بزانە",
+    noResults: "هیچ بۆنێک نەدۆزرایەوە",
+    learnMore: "لێرەوە زیاتر بزانە",
     seasons: { Summer: "هاوین", Winter: "زستان", Spring: "بەهار", Fall: "پاییز" },
     longevityLevels: {
       Weak: "کەم", Moderate: "مامناوەند",
@@ -71,6 +72,9 @@ export const translations = {
     myFavorites: "دڵخوازەکانم",
     members: "ئەندامان",
     year: "ساڵی بەرهەمهێنان",
+    manageNoteImages: "بەڕێوەبردنی وێنەی بۆنەکان",
+    noteImagesTitle: "وێنەی بۆنەکان",
+    noteImagesDesc: "وێنەیەک بۆ هەر بۆنێک باربکە. کرتە لەسەر وێنەکە بکە بۆ گۆڕین.",
   },
   ar: {
     dir: "rtl",
@@ -82,7 +86,8 @@ export const translations = {
     gender: "الجنس", brand: "الماركة", season: "الموسم", longevity: "الثبات", notes: "نوتات العطر",
     all: "الكل", men: "رجالي", women: "نسائي", unisex: "للجنسين",
     apply: "تطبيق", clear: "مسح",
-    noResults: "لم يتم العثور على عطور",learnMore: "اعرف المزيد من هنا",
+    noResults: "لم يتم العثور على عطور",
+    learnMore: "اعرف المزيد من هنا",
     seasons: { Summer: "الصيف", Winter: "الشتاء", Spring: "الربيع", Fall: "الخريف" },
     longevityLevels: {
       Weak: "ضعيف", Moderate: "متوسط",
@@ -144,6 +149,9 @@ export const translations = {
     myFavorites: "المفضلة",
     members: "الأعضاء",
     year: "سنة الإنتاج",
+    manageNoteImages: "إدارة صور النوتات",
+    noteImagesTitle: "صور النوتات",
+    noteImagesDesc: "ارفع صورة لكل نوتة عطر. اضغط على الصورة لتغييرها.",
   },
   en: {
     dir: "ltr",
@@ -155,7 +163,8 @@ export const translations = {
     gender: "Gender", brand: "Brand", season: "Season", longevity: "Longevity", notes: "Scent Notes",
     all: "All", men: "Men", women: "Women", unisex: "Unisex",
     apply: "Apply", clear: "Clear all",
-    noResults: "No perfumes found",learnMore: "Know more from here",
+    noResults: "No perfumes found",
+    learnMore: "Know more from here",
     seasons: { Summer: "Summer", Winter: "Winter", Spring: "Spring", Fall: "Fall" },
     longevityLevels: {
       Weak: "Weak", Moderate: "Moderate",
@@ -217,5 +226,8 @@ export const translations = {
     myFavorites: "My Favorites",
     members: "Members",
     year: "Production Year",
+    manageNoteImages: "Manage Note Images",
+    noteImagesTitle: "Note Images",
+    noteImagesDesc: "Upload a photo for each scent note. Tap a note's image to replace it.",
   },
 };

@@ -49,6 +49,7 @@ export default function PerfumeDetail() {
   const [lang, setLang] = useState("ku");
   const [myPicks, setMyPicks] = useState([]);
   const [seasonCounts, setSeasonCounts] = useState({ Summer: 0, Winter: 0, Spring: 0, Fall: 0 });
+  const [noteImages, setNoteImages] = useState({});
 
   const [editing, setEditing] = useState(false);
   const [editName, setEditName] = useState("");
@@ -86,6 +87,18 @@ export default function PerfumeDetail() {
   useEffect(() => {
     fetchPerfume();
   }, [id]);
+
+  useEffect(() => {
+    async function fetchNoteImages() {
+      const { data } = await supabase.from("note_images").select("*");
+      if (data) {
+        const map = {};
+        data.forEach((row) => { map[row.note_key] = row.image_url; });
+        setNoteImages(map);
+      }
+    }
+    fetchNoteImages();
+  }, []);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setUser(data.session?.user ?? null));
@@ -305,19 +318,49 @@ export default function PerfumeDetail() {
             </p>
           )}
 
-          <div style={{ display: "grid", gap: "1rem", marginBottom: "1.5rem" }}>
+          <div style={{ display: "grid", gap: "1.2rem", marginBottom: "1.5rem" }}>
             <div>
-              <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase" }}>{t.topNotes}</h4>
-              <p>{perfume.top_notes?.split(",").map((n) => t.notesList[n.trim()] || n.trim()).join(", ")}</p>
+              <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase", marginBottom: "0.6rem" }}>{t.topNotes}</h4>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}>
+                {perfume.top_notes?.split(",").map((n) => n.trim()).filter(Boolean).map((n) => (
+                  <div key={n} style={{ textAlign: "center", width: "60px" }}>
+                    <div style={{ width: "50px", height: "50px", borderRadius: "50%", overflow: "hidden", margin: "0 auto", background: "#f0e6d2" }}>
+                      {noteImages[n] && <img src={noteImages[n]} alt={n} style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
+                    </div>
+                    <p style={{ fontSize: "0.7rem", marginTop: "0.3rem" }}>{t.notesList[n] || n}</p>
+                  </div>
+                ))}
+              </div>
             </div>
+
             <div>
-              <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase" }}>{t.middleNotes}</h4>
-              <p>{perfume.middle_notes?.split(",").map((n) => t.notesList[n.trim()] || n.trim()).join(", ")}</p>
+              <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase", marginBottom: "0.6rem" }}>{t.middleNotes}</h4>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}>
+                {perfume.middle_notes?.split(",").map((n) => n.trim()).filter(Boolean).map((n) => (
+                  <div key={n} style={{ textAlign: "center", width: "60px" }}>
+                    <div style={{ width: "50px", height: "50px", borderRadius: "50%", overflow: "hidden", margin: "0 auto", background: "#f0e6d2" }}>
+                      {noteImages[n] && <img src={noteImages[n]} alt={n} style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
+                    </div>
+                    <p style={{ fontSize: "0.7rem", marginTop: "0.3rem" }}>{t.notesList[n] || n}</p>
+                  </div>
+                ))}
+              </div>
             </div>
+
             <div>
-              <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase" }}>{t.baseNotes}</h4>
-              <p>{perfume.base_notes?.split(",").map((n) => t.notesList[n.trim()] || n.trim()).join(", ")}</p>
+              <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase", marginBottom: "0.6rem" }}>{t.baseNotes}</h4>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}>
+                {perfume.base_notes?.split(",").map((n) => n.trim()).filter(Boolean).map((n) => (
+                  <div key={n} style={{ textAlign: "center", width: "60px" }}>
+                    <div style={{ width: "50px", height: "50px", borderRadius: "50%", overflow: "hidden", margin: "0 auto", background: "#f0e6d2" }}>
+                      {noteImages[n] && <img src={noteImages[n]} alt={n} style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
+                    </div>
+                    <p style={{ fontSize: "0.7rem", marginTop: "0.3rem" }}>{t.notesList[n] || n}</p>
+                  </div>
+                ))}
+              </div>
             </div>
+
             <div>
               <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase" }}>{t.longevity}</h4>
               <p>{t.longevityLevels[perfume.longevity] || perfume.longevity}</p>
@@ -379,7 +422,7 @@ export default function PerfumeDetail() {
           )}
 
           <div style={{ textAlign: "center", paddingBottom: "3rem" }}>
-               <a
+              <a
               href={whatsappLink}
               target="_blank"
               rel="noopener noreferrer"
@@ -444,7 +487,16 @@ export default function PerfumeDetail() {
             <h4 style={{ marginBottom: "0.5rem" }}>{t.topNotesSection}</h4>
             <div className="chip-row">
               {sortedNotes.map((n) => (
-                <button type="button" key={n} className={`chip ${editTopNotes.includes(n) ? "active" : ""}`} onClick={() => toggleEditNote(editTopNotes, setEditTopNotes, n)}>
+                <button
+                  type="button"
+                  key={n}
+                  className={`chip ${editTopNotes.includes(n) ? "active" : ""}`}
+                  onClick={() => toggleEditNote(editTopNotes, setEditTopNotes, n)}
+                  style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}
+                >
+                  {noteImages[n] && (
+                    <img src={noteImages[n]} alt={n} style={{ width: "20px", height: "20px", borderRadius: "50%", objectFit: "cover" }} />
+                  )}
                   {t.notesList[n]}
                 </button>
               ))}
@@ -455,7 +507,16 @@ export default function PerfumeDetail() {
             <h4 style={{ marginBottom: "0.5rem" }}>{t.middleNotesSection}</h4>
             <div className="chip-row">
               {sortedNotes.map((n) => (
-                <button type="button" key={n} className={`chip ${editMiddleNotes.includes(n) ? "active" : ""}`} onClick={() => toggleEditNote(editMiddleNotes, setEditMiddleNotes, n)}>
+                <button
+                  type="button"
+                  key={n}
+                  className={`chip ${editMiddleNotes.includes(n) ? "active" : ""}`}
+                  onClick={() => toggleEditNote(editMiddleNotes, setEditMiddleNotes, n)}
+                  style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}
+                >
+                  {noteImages[n] && (
+                    <img src={noteImages[n]} alt={n} style={{ width: "20px", height: "20px", borderRadius: "50%", objectFit: "cover" }} />
+                  )}
                   {t.notesList[n]}
                 </button>
               ))}
@@ -466,7 +527,16 @@ export default function PerfumeDetail() {
             <h4 style={{ marginBottom: "0.5rem" }}>{t.baseNotesSection}</h4>
             <div className="chip-row">
               {sortedNotes.map((n) => (
-                <button type="button" key={n} className={`chip ${editBaseNotes.includes(n) ? "active" : ""}`} onClick={() => toggleEditNote(editBaseNotes, setEditBaseNotes, n)}>
+                <button
+                  type="button"
+                  key={n}
+                  className={`chip ${editBaseNotes.includes(n) ? "active" : ""}`}
+                  onClick={() => toggleEditNote(editBaseNotes, setEditBaseNotes, n)}
+                  style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}
+                >
+                  {noteImages[n] && (
+                    <img src={noteImages[n]} alt={n} style={{ width: "20px", height: "20px", borderRadius: "50%", objectFit: "cover" }} />
+                  )}
                   {t.notesList[n]}
                 </button>
               ))}

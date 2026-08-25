@@ -45,6 +45,7 @@ export default function AdminPage() {
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [existingBrands, setExistingBrands] = useState([]);
+  const [noteImages, setNoteImages] = useState({});
 
   const currentYear = new Date().getFullYear();
   const yearOptions = Array.from({ length: currentYear - 1900 + 1 }, (_, i) => currentYear - i);
@@ -91,6 +92,18 @@ export default function AdminPage() {
       }
     }
     fetchBrands();
+  }, []);
+
+  useEffect(() => {
+    async function fetchNoteImages() {
+      const { data } = await supabase.from("note_images").select("*");
+      if (data) {
+        const map = {};
+        data.forEach((row) => { map[row.note_key] = row.image_url; });
+        setNoteImages(map);
+      }
+    }
+    fetchNoteImages();
   }, []);
 
   const sortedNotes = useMemo(() => {
@@ -160,8 +173,8 @@ export default function AdminPage() {
   return (
     <div dir={t.dir} style={{ maxWidth: "600px", margin: "0 auto", padding: "2rem 1.5rem" }}>
       <a href="/" style={{ display: "inline-block", marginBottom: "1.5rem", color: "var(--black)", fontWeight: "bold" }}>← {t.back}</a>
-       <a href="/admin/notes" style={{ display: "block", marginBottom: "1rem", color: "var(--gold)", fontWeight: "bold" }}>
-        🖼️ Manage Note Images →
+      <a href="/admin/notes" style={{ display: "block", marginBottom: "1rem", color: "var(--gold)", fontWeight: "bold" }}>
+        🖼️ {t.manageNoteImages} →
       </a>
       <h1 style={{ marginBottom: "1.5rem" }}>{t.adminPanel} — {t.addPerfume}</h1>
 
@@ -223,7 +236,16 @@ export default function AdminPage() {
           <h4 style={{ marginBottom: "0.5rem" }}>{t.topNotesSection}</h4>
           <div className="chip-row">
             {sortedNotes.map((n) => (
-              <button type="button" key={n} className={`chip ${topNotes.includes(n) ? "active" : ""}`} onClick={() => toggleNote(topNotes, setTopNotes, n)}>
+              <button
+                type="button"
+                key={n}
+                className={`chip ${topNotes.includes(n) ? "active" : ""}`}
+                onClick={() => toggleNote(topNotes, setTopNotes, n)}
+                style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}
+              >
+                {noteImages[n] && (
+                  <img src={noteImages[n]} alt={n} style={{ width: "20px", height: "20px", borderRadius: "50%", objectFit: "cover" }} />
+                )}
                 {t.notesList[n]}
               </button>
             ))}
@@ -234,7 +256,16 @@ export default function AdminPage() {
           <h4 style={{ marginBottom: "0.5rem" }}>{t.middleNotesSection}</h4>
           <div className="chip-row">
             {sortedNotes.map((n) => (
-              <button type="button" key={n} className={`chip ${middleNotes.includes(n) ? "active" : ""}`} onClick={() => toggleNote(middleNotes, setMiddleNotes, n)}>
+              <button
+                type="button"
+                key={n}
+                className={`chip ${middleNotes.includes(n) ? "active" : ""}`}
+                onClick={() => toggleNote(middleNotes, setMiddleNotes, n)}
+                style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}
+              >
+                {noteImages[n] && (
+                  <img src={noteImages[n]} alt={n} style={{ width: "20px", height: "20px", borderRadius: "50%", objectFit: "cover" }} />
+                )}
                 {t.notesList[n]}
               </button>
             ))}
@@ -245,7 +276,16 @@ export default function AdminPage() {
           <h4 style={{ marginBottom: "0.5rem" }}>{t.baseNotesSection}</h4>
           <div className="chip-row">
             {sortedNotes.map((n) => (
-              <button type="button" key={n} className={`chip ${baseNotes.includes(n) ? "active" : ""}`} onClick={() => toggleNote(baseNotes, setBaseNotes, n)}>
+              <button
+                type="button"
+                key={n}
+                className={`chip ${baseNotes.includes(n) ? "active" : ""}`}
+                onClick={() => toggleNote(baseNotes, setBaseNotes, n)}
+                style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}
+              >
+                {noteImages[n] && (
+                  <img src={noteImages[n]} alt={n} style={{ width: "20px", height: "20px", borderRadius: "50%", objectFit: "cover" }} />
+                )}
                 {t.notesList[n]}
               </button>
             ))}
