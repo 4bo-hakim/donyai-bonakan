@@ -160,6 +160,9 @@ export default function AdminPage() {
   return (
     <div dir={t.dir} style={{ maxWidth: "600px", margin: "0 auto", padding: "2rem 1.5rem" }}>
       <a href="/" style={{ display: "inline-block", marginBottom: "1.5rem", color: "var(--black)", fontWeight: "bold" }}>← {t.back}</a>
+       <a href="/admin/notes" style={{ display: "block", marginBottom: "1rem", color: "var(--gold)", fontWeight: "bold" }}>
+        🖼️ Manage Note Images →
+      </a>
       <h1 style={{ marginBottom: "1.5rem" }}>{t.adminPanel} — {t.addPerfume}</h1>
 
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.2rem" }}>
