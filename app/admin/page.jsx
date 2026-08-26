@@ -51,6 +51,10 @@ export default function AdminPage() {
   const [existingBrands, setExistingBrands] = useState([]);
   const [noteImages, setNoteImages] = useState({});
 
+  const [topSearch, setTopSearch] = useState("");
+  const [middleSearch, setMiddleSearch] = useState("");
+  const [baseSearch, setBaseSearch] = useState("");
+
   const currentYear = new Date().getFullYear();
   const yearOptions = Array.from({ length: currentYear - 1900 + 1 }, (_, i) => currentYear - i);
   const [year, setYear] = useState(currentYear);
@@ -238,61 +242,88 @@ export default function AdminPage() {
 
         <div>
           <h4 style={{ marginBottom: "0.5rem" }}>{t.topNotesSection}</h4>
+          <input
+            className="search-input"
+            placeholder={t.searchPlaceholder}
+            value={topSearch}
+            onChange={(e) => setTopSearch(e.target.value)}
+            style={{ marginBottom: "0.6rem" }}
+          />
           <div className="chip-row">
-            {sortedNotes.map((n) => (
-              <button
-                type="button"
-                key={n}
-                className={`chip ${topNotes.includes(n) ? "active" : ""}`}
-                onClick={() => toggleNote(topNotes, setTopNotes, n)}
-                style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}
-              >
-                {noteImages[n] && (
-                  <img src={noteImages[n]} alt={n} style={{ width: "20px", height: "20px", borderRadius: "50%", objectFit: "cover" }} />
-                )}
-                {t.notesList[n]}
-              </button>
-            ))}
+            {sortedNotes
+              .filter((n) => t.notesList[n].toLowerCase().includes(topSearch.toLowerCase()))
+              .map((n) => (
+                <button
+                  type="button"
+                  key={n}
+                  className={`chip ${topNotes.includes(n) ? "active" : ""}`}
+                  onClick={() => toggleNote(topNotes, setTopNotes, n)}
+                  style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}
+                >
+                  {noteImages[n] && (
+                    <img src={noteImages[n]} alt={n} style={{ width: "20px", height: "20px", borderRadius: "50%", objectFit: "cover" }} />
+                  )}
+                  {t.notesList[n]}
+                </button>
+              ))}
           </div>
         </div>
 
         <div>
           <h4 style={{ marginBottom: "0.5rem" }}>{t.middleNotesSection}</h4>
+          <input
+            className="search-input"
+            placeholder={t.searchPlaceholder}
+            value={middleSearch}
+            onChange={(e) => setMiddleSearch(e.target.value)}
+            style={{ marginBottom: "0.6rem" }}
+          />
           <div className="chip-row">
-            {sortedNotes.map((n) => (
-              <button
-                type="button"
-                key={n}
-                className={`chip ${middleNotes.includes(n) ? "active" : ""}`}
-                onClick={() => toggleNote(middleNotes, setMiddleNotes, n)}
-                style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}
-              >
-                {noteImages[n] && (
-                  <img src={noteImages[n]} alt={n} style={{ width: "20px", height: "20px", borderRadius: "50%", objectFit: "cover" }} />
-                )}
-                {t.notesList[n]}
-              </button>
-            ))}
+            {sortedNotes
+              .filter((n) => t.notesList[n].toLowerCase().includes(middleSearch.toLowerCase()))
+              .map((n) => (
+                <button
+                  type="button"
+                  key={n}
+                  className={`chip ${middleNotes.includes(n) ? "active" : ""}`}
+                  onClick={() => toggleNote(middleNotes, setMiddleNotes, n)}
+                  style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}
+                >
+                  {noteImages[n] && (
+                    <img src={noteImages[n]} alt={n} style={{ width: "20px", height: "20px", borderRadius: "50%", objectFit: "cover" }} />
+                  )}
+                  {t.notesList[n]}
+                </button>
+              ))}
           </div>
         </div>
 
         <div>
           <h4 style={{ marginBottom: "0.5rem" }}>{t.baseNotesSection}</h4>
+          <input
+            className="search-input"
+            placeholder={t.searchPlaceholder}
+            value={baseSearch}
+            onChange={(e) => setBaseSearch(e.target.value)}
+            style={{ marginBottom: "0.6rem" }}
+          />
           <div className="chip-row">
-            {sortedNotes.map((n) => (
-              <button
-                type="button"
-                key={n}
-                className={`chip ${baseNotes.includes(n) ? "active" : ""}`}
-                onClick={() => toggleNote(baseNotes, setBaseNotes, n)}
-                style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}
-              >
-                {noteImages[n] && (
-                  <img src={noteImages[n]} alt={n} style={{ width: "20px", height: "20px", borderRadius: "50%", objectFit: "cover" }} />
-                )}
-                {t.notesList[n]}
-              </button>
-            ))}
+            {sortedNotes
+              .filter((n) => t.notesList[n].toLowerCase().includes(baseSearch.toLowerCase()))
+              .map((n) => (
+                <button
+                  type="button"
+                  key={n}
+                  className={`chip ${baseNotes.includes(n) ? "active" : ""}`}
+                  onClick={() => toggleNote(baseNotes, setBaseNotes, n)}
+                  style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}
+                >
+                  {noteImages[n] && (
+                    <img src={noteImages[n]} alt={n} style={{ width: "20px", height: "20px", borderRadius: "50%", objectFit: "cover" }} />
+                  )}
+                  {t.notesList[n]}
+                </button>
+              ))}
           </div>
         </div>
 
