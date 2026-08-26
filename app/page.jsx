@@ -238,6 +238,7 @@ export default function Home() {
                   <>
                     <p style={{ fontSize: "0.85rem", marginBottom: "0.5rem", wordBreak: "break-all" }}>{user.email}</p>
                     <a href="/favorites" className="dropdown-link">❤️ {t.myFavorites}</a>
+                    <a href="/profile" className="dropdown-link">👤 My Profile</a>
                     {profile?.is_admin && (
                       <a href="/admin" className="dropdown-link">🛠 Admin Panel</a>
                     )}
