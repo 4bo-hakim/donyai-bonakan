@@ -32,6 +32,10 @@ const NOTES_LIST = [
   "Lime", "Lotus", "Mango", "Melon", "Mimosa",
   "Myrrh", "Narcissus", "Orris", "Osmanthus", "Palo Santo",
   "Ambergris", "Amber Wood", "Sea Notes",
+  "Black Pepper", "Ice Cream", "Brown Sugar", "Rum", "Watermelon",
+  "Orange", "Mahogany", "Fruits", "Ambrette", "Almizcle",
+  "Black Tea", "Toffee", "Mahonial", "Candied Almond", "Ambroxan",
+  "Truffle",
 ];
 
 const LANG_LABELS = { ku: "KU", ar: "AR", en: "EN" };
