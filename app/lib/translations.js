@@ -60,7 +60,7 @@ export const translations = {
       Osmanthus: "ئۆسمانتەس", "Palo Santo": "پالۆ سانتۆ", Ambergris: "عەمبەرگریس",
       "Amber Wood": "داری عەمبەر", "Sea Notes": "بۆنی دەریا",
        "Black Pepper": "بیبەری ڕەش", "Ice Cream": "بەستەڵی", "Brown Sugar": "شەکری قاوەیی",
-      Rum: "ڕەم", Watermelon: "زبەش", Orange: "پرتەقاڵ",
+      Rum: "ڕەم", Watermelon: "شووتی", Orange: "پرتەقاڵ",
       Mahogany: "داری ماهۆگەنی", Fruits: "میوەکان", Ambrette: "ئامبرێت",
       Almizcle: "مسک (ئەلمیزکلێ)", "Black Tea": "چای ڕەش", Toffee: "تۆفی",
       Mahonial: "ماهۆنیال", "Candied Almond": "بادەمی شیرین", Ambroxan: "ئامبرۆکسان",
