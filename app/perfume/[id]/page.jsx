@@ -202,7 +202,7 @@ export default function PerfumeDetail() {
     }
   }
 
- async function toggleSeasonPick(season) {
+   async function toggleSeasonPick(season) {
   if (!user) {
     setShowLoginWarning(true);
     setTimeout(() => setShowLoginWarning(false), 3000);
@@ -212,8 +212,6 @@ export default function PerfumeDetail() {
     await supabase.from("season_preferences").delete()
       .eq("user_id", user.id).eq("perfume_id", id).eq("season", season);
   } else {
-    await supabase.from("season_preferences").delete()
-      .eq("user_id", user.id).eq("perfume_id", id);
     await supabase.from("season_preferences").insert({ user_id: user.id, perfume_id: id, season });
   }
   fetchSeasonData();
@@ -392,10 +390,10 @@ export default function PerfumeDetail() {
               </div>
             </div>
 
-            <div style={{ textAlign: "center" }}>
-              <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase" }}>{t.longevity}</h4>
-              <p>{t.longevityLevels[perfume.longevity] || perfume.longevity}</p>
-            </div>
+                 <div style={{ textAlign: "center" }}>
+                   <h4 style={{ color: "#8a7a5c", fontSize: "1.05rem", fontWeight: "bold", textTransform: "uppercase" }}>{t.longevity}</h4>
+                   <p style={{ fontSize: "0.95rem", fontWeight: "bold" }}>{t.longevityLevels[perfume.longevity] || perfume.longevity}</p>
+                 </div>
           </div>
 
           <div style={{ marginBottom: "2rem" }}>
