@@ -324,8 +324,8 @@ export default function PerfumeDetail() {
 
           <div style={{ display: "grid", gap: "1.2rem", marginBottom: "1.5rem" }}>
             <div>
-              <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase", marginBottom: "0.6rem" }}>{t.topNotes}</h4>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}>
+               <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase", marginBottom: "0.6rem", textAlign: "center" }}>{t.topNotes}</h4>
+               <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", justifyContent: "center" }}>
                 {perfume.top_notes?.split(",").map((n) => n.trim()).filter(Boolean).map((n) => (
                   <div key={n} style={{ textAlign: "center", width: "60px" }}>
                     <div style={{ width: "50px", height: "50px", borderRadius: "50%", overflow: "hidden", margin: "0 auto", background: "#f0e6d2" }}>
@@ -338,8 +338,8 @@ export default function PerfumeDetail() {
             </div>
 
             <div>
-              <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase", marginBottom: "0.6rem" }}>{t.middleNotes}</h4>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}>
+              <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase", marginBottom: "0.6rem", textAlign: "center" }}>{t.middleNotes}</h4>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", justifyContent: "center" }}>
                 {perfume.middle_notes?.split(",").map((n) => n.trim()).filter(Boolean).map((n) => (
                   <div key={n} style={{ textAlign: "center", width: "60px" }}>
                     <div style={{ width: "50px", height: "50px", borderRadius: "50%", overflow: "hidden", margin: "0 auto", background: "#f0e6d2" }}>
@@ -352,8 +352,8 @@ export default function PerfumeDetail() {
             </div>
 
             <div>
-              <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase", marginBottom: "0.6rem" }}>{t.baseNotes}</h4>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}>
+               <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase", marginBottom: "0.6rem", textAlign: "center" }}>{t.baseNotes}</h4>
+               <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", justifyContent: "center" }}>
                 {perfume.base_notes?.split(",").map((n) => n.trim()).filter(Boolean).map((n) => (
                   <div key={n} style={{ textAlign: "center", width: "60px" }}>
                     <div style={{ width: "50px", height: "50px", borderRadius: "50%", overflow: "hidden", margin: "0 auto", background: "#f0e6d2" }}>
@@ -365,7 +365,7 @@ export default function PerfumeDetail() {
               </div>
             </div>
 
-            <div>
+            <div style={{ textAlign: "center" }}>
               <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase" }}>{t.longevity}</h4>
               <p>{t.longevityLevels[perfume.longevity] || perfume.longevity}</p>
             </div>
