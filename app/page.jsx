@@ -238,16 +238,16 @@ export default function Home() {
                   <>
                     <p style={{ fontSize: "0.85rem", marginBottom: "0.5rem", wordBreak: "break-all" }}>{user.email}</p>
                     <a href="/favorites" className="dropdown-link">❤️ {t.myFavorites}</a>
-                    <a href="/profile" className="dropdown-link">👤 My Profile</a>
+                    <a href="/profile" className="dropdown-link">👤 {t.myProfile}</a>
                     {profile?.is_admin && (
-                      <a href="/admin" className="dropdown-link">🛠 Admin Panel</a>
+                      <a href="/admin" className="dropdown-link">🛠 {t.adminPanelLink}</a>
                     )}
                     <button
                       className="dropdown-link"
                       style={{ background: "none", border: "none", width: "100%" }}
                       onClick={() => { supabase.auth.signOut(); setMenuOpen(false); }}
                     >
-                      Log out
+                      {t.logout}
                     </button>
                   </>
                 ) : (

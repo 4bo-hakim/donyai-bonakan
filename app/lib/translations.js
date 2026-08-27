@@ -15,7 +15,7 @@ export const translations = {
     longevityLevels: {
       Weak: "کەم", Moderate: "مامناوەند",
       "Long-lasting": "درێژ", "Very Long-lasting": "زۆر درێژ",
-    },
+      },
     notesList: {
       Amber: "عەمبەر", "Amber Marine": "عەمبەری دەریایی", Sandalwood: "چوبی سەندەل",
       Cedarwood: "دار ئورز", Oud: "عود", Musk: "مسک", Vanilla: "ڤانیلا",
@@ -80,7 +80,7 @@ export const translations = {
     year: "ساڵی بەرهەمهێنان",
     manageNoteImages: "بەڕێوەبردنی وێنەی بۆنەکان",
     noteImagesTitle: "وێنەی بۆنەکان",
-    noteImagesDesc: "وێنەیەک بۆ هەر بۆنێک باربکە. کرتە لەسەر وێنەکە بکە بۆ گۆڕین.",
+    noteImagesDesc: "وێنەیەک بۆ هەر بۆنێک باربکە. کرتە لەسەر وێنەکە بکە بۆ گۆڕین.",myProfile: "پرۆفایلی من", adminPanelLink: "پانێڵی بەڕێوەبەر", logout: "چوونەدەرەوە",
   },
   ar: {
     dir: "rtl",
@@ -164,6 +164,7 @@ export const translations = {
     manageNoteImages: "إدارة صور النوتات",
     noteImagesTitle: "صور النوتات",
     noteImagesDesc: "ارفع صورة لكل نوتة عطر. اضغط على الصورة لتغييرها.",
+    myProfile: "ملفي الشخصي", adminPanelLink: "لوحة الإدارة", logout: "تسجيل الخروج",
   },
   en: {
     dir: "ltr",
@@ -246,5 +247,6 @@ export const translations = {
     manageNoteImages: "Manage Note Images",
     noteImagesTitle: "Note Images",
     noteImagesDesc: "Upload a photo for each scent note. Tap a note's image to replace it.",
+    myProfile: "My Profile", adminPanelLink: "Admin Panel", logout: "Log out",
   },
 };
