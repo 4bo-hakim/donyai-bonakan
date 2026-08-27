@@ -461,13 +461,13 @@ body::after {
   position: fixed;
   inset: 0;
   background: linear-gradient(180deg,
-    rgba(250,246,240,0.94) 0%,
-    rgba(250,246,240,0.88) 35%,
-    rgba(250,246,240,0.94) 100%);
+    rgba(250,246,240,0.75) 0%,
+    rgba(250,246,240,0.6) 35%,
+    rgba(250,246,240,0.75) 100%);
   z-index: -1;
 }
 
 @keyframes bgFadeIn {
   from { opacity: 0; }
-  to { opacity: 0.4; }
+  to { opacity: 0.65; }
 }
