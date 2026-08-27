@@ -131,8 +131,10 @@ button {
 }
 
 .hero p {
-  color: #8a7a5c;
+  color: #6b5d3f;
   font-size: 1rem;
+  font-weight: 600;
+  text-shadow: 0 1px 3px rgba(255,255,255,0.6);
 }
 
 /* Search + filter row */
