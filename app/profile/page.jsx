@@ -108,7 +108,7 @@ export default function ProfilePage() {
         {saving ? t.saving : t.save}
       </button>
 
-      {savedMsg && <p style={{ color: "green", marginTop: "1rem" }}>✓ {t.saved}</p>}
+      {savedMsg && <p style={{ color: "green", marginTop: "1rem" }}>✓ {t.photoSaved}</p>}
     </div>
   );
 }
