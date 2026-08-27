@@ -50,6 +50,7 @@ export default function AdminPage() {
   const [imagePreview, setImagePreview] = useState(null);
   const [existingBrands, setExistingBrands] = useState([]);
   const [noteImages, setNoteImages] = useState({});
+  const [customNotes, setCustomNotes] = useState([]);
 
   const [topSearch, setTopSearch] = useState("");
   const [middleSearch, setMiddleSearch] = useState("");
@@ -114,11 +115,33 @@ export default function AdminPage() {
     fetchNoteImages();
   }, []);
 
+  useEffect(() => {
+    async function fetchCustomNotes() {
+      const { data } = await supabase.from("custom_notes").select("*");
+      if (data) setCustomNotes(data);
+    }
+    fetchCustomNotes();
+  }, []);
+
+  const customNotesMap = useMemo(() => {
+    const map = {};
+    customNotes.forEach((c) => { map[c.note_key] = { en: c.name_en, ku: c.name_ku, ar: c.name_ar }; });
+    return map;
+  }, [customNotes]);
+
+  function getNoteLabel(key) {
+    if (customNotesMap[key]) return customNotesMap[key][lang];
+    return t.notesList[key] || key;
+  }
+
+  const allNoteKeys = useMemo(
+    () => [...NOTES_LIST, ...customNotes.map((c) => c.note_key)],
+    [customNotes]
+  );
+
   const sortedNotes = useMemo(() => {
-    return [...NOTES_LIST].sort((a, b) =>
-      t.notesList[a].localeCompare(t.notesList[b])
-    );
-  }, [lang]);
+    return [...allNoteKeys].sort((a, b) => getNoteLabel(a).localeCompare(getNoteLabel(b)));
+  }, [lang, allNoteKeys]);
 
   function toggleNote(list, setList, note) {
     setList((prev) => prev.includes(note) ? prev.filter((n) => n !== note) : [...prev, note]);
@@ -251,7 +274,7 @@ export default function AdminPage() {
           />
           <div className="chip-row">
             {sortedNotes
-              .filter((n) => t.notesList[n].toLowerCase().includes(topSearch.toLowerCase()))
+              .filter((n) => getNoteLabel(n).toLowerCase().includes(topSearch.toLowerCase()))
               .map((n) => (
                 <button
                   type="button"
@@ -263,7 +286,7 @@ export default function AdminPage() {
                   {noteImages[n] && (
                     <img src={noteImages[n]} alt={n} style={{ width: "20px", height: "20px", borderRadius: "50%", objectFit: "cover" }} />
                   )}
-                  {t.notesList[n]}
+                  {getNoteLabel(n)}
                 </button>
               ))}
           </div>
@@ -280,7 +303,7 @@ export default function AdminPage() {
           />
           <div className="chip-row">
             {sortedNotes
-              .filter((n) => t.notesList[n].toLowerCase().includes(middleSearch.toLowerCase()))
+              .filter((n) => getNoteLabel(n).toLowerCase().includes(middleSearch.toLowerCase()))
               .map((n) => (
                 <button
                   type="button"
@@ -292,7 +315,7 @@ export default function AdminPage() {
                   {noteImages[n] && (
                     <img src={noteImages[n]} alt={n} style={{ width: "20px", height: "20px", borderRadius: "50%", objectFit: "cover" }} />
                   )}
-                  {t.notesList[n]}
+                  {getNoteLabel(n)}
                 </button>
               ))}
           </div>
@@ -309,7 +332,7 @@ export default function AdminPage() {
           />
           <div className="chip-row">
             {sortedNotes
-              .filter((n) => t.notesList[n].toLowerCase().includes(baseSearch.toLowerCase()))
+              .filter((n) => getNoteLabel(n).toLowerCase().includes(baseSearch.toLowerCase()))
               .map((n) => (
                 <button
                   type="button"
@@ -321,7 +344,7 @@ export default function AdminPage() {
                   {noteImages[n] && (
                     <img src={noteImages[n]} alt={n} style={{ width: "20px", height: "20px", borderRadius: "50%", objectFit: "cover" }} />
                   )}
-                  {t.notesList[n]}
+                  {getNoteLabel(n)}
                 </button>
               ))}
           </div>

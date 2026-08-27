@@ -53,6 +53,7 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [memberCount, setMemberCount] = useState(null);
+  const [customNotes, setCustomNotes] = useState([]);
   const menuRef = useRef(null);
   const langMenuRef = useRef(null);
 
@@ -114,6 +115,14 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    async function fetchCustomNotes() {
+      const { data } = await supabase.from("custom_notes").select("*");
+      if (data) setCustomNotes(data);
+    }
+    fetchCustomNotes();
+  }, []);
+
+  useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setUser(data.session?.user ?? null));
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
@@ -133,6 +142,26 @@ export default function Home() {
     }
     fetchProfile();
   }, [user]);
+
+  const customNotesMap = useMemo(() => {
+    const map = {};
+    customNotes.forEach((c) => { map[c.note_key] = { en: c.name_en, ku: c.name_ku, ar: c.name_ar }; });
+    return map;
+  }, [customNotes]);
+
+  function getNoteLabel(key) {
+    if (customNotesMap[key]) return customNotesMap[key][lang];
+    return t.notesList[key] || key;
+  }
+
+  const allNoteKeys = useMemo(
+    () => [...NOTES_LIST, ...customNotes.map((c) => c.note_key)],
+    [customNotes]
+  );
+
+  const sortedNotes = useMemo(() => {
+    return [...allNoteKeys].sort((a, b) => getNoteLabel(a).localeCompare(getNoteLabel(b)));
+  }, [lang, allNoteKeys]);
 
   const brands = useMemo(() => {
     const seen = new Map();
@@ -168,8 +197,9 @@ export default function Home() {
 
   return (
     <div dir={t.dir}>
-        <div className="home-bg-image" />
-        <div className="home-bg-overlay" />
+      <div className="home-bg-image" />
+      <div className="home-bg-overlay" />
+
       <header className="header">
         <div className="logo">{t.title}</div>
         <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
@@ -355,10 +385,10 @@ export default function Home() {
 
             <div className="filter-group">
               <h4>{t.notes}</h4>
-              {NOTES_LIST.map((n) => (
+              {sortedNotes.map((n) => (
                 <label key={n} className="checkbox-row">
                   <input type="checkbox" checked={notes.includes(n)} onChange={() => toggleNote(n)} />
-                  {t.notesList[n]}
+                  {getNoteLabel(n)}
                 </label>
               ))}
             </div>

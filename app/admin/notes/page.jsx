@@ -43,6 +43,7 @@ export default function NoteImagesAdmin() {
   const [checkedAuth, setCheckedAuth] = useState(false);
   const [noteImages, setNoteImages] = useState({});
   const [uploadingKey, setUploadingKey] = useState(null);
+  const [customNotes, setCustomNotes] = useState([]);
 
   const t = translations[lang];
 
@@ -78,9 +79,33 @@ export default function NoteImagesAdmin() {
     fetchNoteImages();
   }, []);
 
+  useEffect(() => {
+    async function fetchCustomNotes() {
+      const { data } = await supabase.from("custom_notes").select("*");
+      if (data) setCustomNotes(data);
+    }
+    fetchCustomNotes();
+  }, []);
+
+  const customNotesMap = useMemo(() => {
+    const map = {};
+    customNotes.forEach((c) => { map[c.note_key] = { en: c.name_en, ku: c.name_ku, ar: c.name_ar }; });
+    return map;
+  }, [customNotes]);
+
+  function getNoteLabel(key) {
+    if (customNotesMap[key]) return customNotesMap[key][lang];
+    return t.notesList[key] || key;
+  }
+
+  const allNoteKeys = useMemo(
+    () => [...NOTES_LIST, ...customNotes.map((c) => c.note_key)],
+    [customNotes]
+  );
+
   const sortedNotes = useMemo(() => {
-    return [...NOTES_LIST].sort((a, b) => t.notesList[a].localeCompare(t.notesList[b]));
-  }, [lang]);
+    return [...allNoteKeys].sort((a, b) => getNoteLabel(a).localeCompare(getNoteLabel(b)));
+  }, [lang, allNoteKeys]);
 
   async function handleUpload(noteKey, file) {
     if (!file) return;
@@ -117,6 +142,9 @@ export default function NoteImagesAdmin() {
     <div dir={t.dir} style={{ maxWidth: "800px", margin: "0 auto", padding: "2rem 1.5rem" }}>
       <a href="/admin" style={{ display: "inline-block", marginBottom: "1.5rem", color: "var(--black)", fontWeight: "bold" }}>← {t.back}</a>
       <h1 style={{ marginBottom: "0.3rem" }}>🖼️ {t.noteImagesTitle}</h1>
+      <a href="/admin/notes/add" style={{ display: "inline-block", marginBottom: "1rem", color: "var(--gold)", fontWeight: "bold" }}>
+        ➕ Add Custom Note →
+      </a>
       <p style={{ color: "#8a7a5c", marginBottom: "1.5rem", fontSize: "0.9rem" }}>
         {t.noteImagesDesc}
       </p>
@@ -148,7 +176,7 @@ export default function NoteImagesAdmin() {
                 </div>
               )}
             </div>
-            <p style={{ fontSize: "0.75rem", marginTop: "0.3rem" }}>{t.notesList[n]}</p>
+            <p style={{ fontSize: "0.75rem", marginTop: "0.3rem" }}>{getNoteLabel(n)}</p>
             <input
               type="file"
               accept="image/*"

@@ -54,6 +54,7 @@ export default function PerfumeDetail() {
   const [myPicks, setMyPicks] = useState([]);
   const [seasonCounts, setSeasonCounts] = useState({ Summer: 0, Winter: 0, Spring: 0, Fall: 0 });
   const [noteImages, setNoteImages] = useState({});
+  const [customNotes, setCustomNotes] = useState([]);
 
   const [editing, setEditing] = useState(false);
   const [editName, setEditName] = useState("");
@@ -72,10 +73,6 @@ export default function PerfumeDetail() {
   const yearOptions = Array.from({ length: currentYear - 1900 + 1 }, (_, i) => currentYear - i);
 
   const t = translations[lang];
-
-  const sortedNotes = useMemo(() => {
-    return [...NOTES_LIST].sort((a, b) => t.notesList[a].localeCompare(t.notesList[b]));
-  }, [lang]);
 
   useEffect(() => {
     const saved = localStorage.getItem("siteLang");
@@ -103,6 +100,34 @@ export default function PerfumeDetail() {
     }
     fetchNoteImages();
   }, []);
+
+  useEffect(() => {
+    async function fetchCustomNotes() {
+      const { data } = await supabase.from("custom_notes").select("*");
+      if (data) setCustomNotes(data);
+    }
+    fetchCustomNotes();
+  }, []);
+
+  const customNotesMap = useMemo(() => {
+    const map = {};
+    customNotes.forEach((c) => { map[c.note_key] = { en: c.name_en, ku: c.name_ku, ar: c.name_ar }; });
+    return map;
+  }, [customNotes]);
+
+  function getNoteLabel(key) {
+    if (customNotesMap[key]) return customNotesMap[key][lang];
+    return t.notesList[key] || key;
+  }
+
+  const allNoteKeys = useMemo(
+    () => [...NOTES_LIST, ...customNotes.map((c) => c.note_key)],
+    [customNotes]
+  );
+
+  const sortedNotes = useMemo(() => {
+    return [...allNoteKeys].sort((a, b) => getNoteLabel(a).localeCompare(getNoteLabel(b)));
+  }, [lang, allNoteKeys]);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setUser(data.session?.user ?? null));
@@ -324,14 +349,14 @@ export default function PerfumeDetail() {
 
           <div style={{ display: "grid", gap: "1.2rem", marginBottom: "1.5rem" }}>
             <div>
-               <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase", marginBottom: "0.6rem", textAlign: "center" }}>{t.topNotes}</h4>
-               <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", justifyContent: "center" }}>
+              <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase", marginBottom: "0.6rem", textAlign: "center" }}>{t.topNotes}</h4>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", justifyContent: "center" }}>
                 {perfume.top_notes?.split(",").map((n) => n.trim()).filter(Boolean).map((n) => (
                   <div key={n} style={{ textAlign: "center", width: "60px" }}>
                     <div style={{ width: "50px", height: "50px", borderRadius: "50%", overflow: "hidden", margin: "0 auto", background: "#f0e6d2" }}>
                       {noteImages[n] && <img src={noteImages[n]} alt={n} style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
                     </div>
-                    <p style={{ fontSize: "0.7rem", marginTop: "0.3rem" }}>{t.notesList[n] || n}</p>
+                    <p style={{ fontSize: "0.7rem", marginTop: "0.3rem" }}>{getNoteLabel(n)}</p>
                   </div>
                 ))}
               </div>
@@ -345,21 +370,21 @@ export default function PerfumeDetail() {
                     <div style={{ width: "50px", height: "50px", borderRadius: "50%", overflow: "hidden", margin: "0 auto", background: "#f0e6d2" }}>
                       {noteImages[n] && <img src={noteImages[n]} alt={n} style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
                     </div>
-                    <p style={{ fontSize: "0.7rem", marginTop: "0.3rem" }}>{t.notesList[n] || n}</p>
+                    <p style={{ fontSize: "0.7rem", marginTop: "0.3rem" }}>{getNoteLabel(n)}</p>
                   </div>
                 ))}
               </div>
             </div>
 
             <div>
-               <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase", marginBottom: "0.6rem", textAlign: "center" }}>{t.baseNotes}</h4>
-               <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", justifyContent: "center" }}>
+              <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase", marginBottom: "0.6rem", textAlign: "center" }}>{t.baseNotes}</h4>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", justifyContent: "center" }}>
                 {perfume.base_notes?.split(",").map((n) => n.trim()).filter(Boolean).map((n) => (
                   <div key={n} style={{ textAlign: "center", width: "60px" }}>
                     <div style={{ width: "50px", height: "50px", borderRadius: "50%", overflow: "hidden", margin: "0 auto", background: "#f0e6d2" }}>
                       {noteImages[n] && <img src={noteImages[n]} alt={n} style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
                     </div>
-                    <p style={{ fontSize: "0.7rem", marginTop: "0.3rem" }}>{t.notesList[n] || n}</p>
+                    <p style={{ fontSize: "0.7rem", marginTop: "0.3rem" }}>{getNoteLabel(n)}</p>
                   </div>
                 ))}
               </div>
@@ -501,7 +526,7 @@ export default function PerfumeDetail() {
                   {noteImages[n] && (
                     <img src={noteImages[n]} alt={n} style={{ width: "20px", height: "20px", borderRadius: "50%", objectFit: "cover" }} />
                   )}
-                  {t.notesList[n]}
+                  {getNoteLabel(n)}
                 </button>
               ))}
             </div>
@@ -521,7 +546,7 @@ export default function PerfumeDetail() {
                   {noteImages[n] && (
                     <img src={noteImages[n]} alt={n} style={{ width: "20px", height: "20px", borderRadius: "50%", objectFit: "cover" }} />
                   )}
-                  {t.notesList[n]}
+                  {getNoteLabel(n)}
                 </button>
               ))}
             </div>
@@ -541,7 +566,7 @@ export default function PerfumeDetail() {
                   {noteImages[n] && (
                     <img src={noteImages[n]} alt={n} style={{ width: "20px", height: "20px", borderRadius: "50%", objectFit: "cover" }} />
                   )}
-                  {t.notesList[n]}
+                  {getNoteLabel(n)}
                 </button>
               ))}
             </div>
