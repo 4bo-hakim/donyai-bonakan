@@ -202,20 +202,22 @@ export default function PerfumeDetail() {
     }
   }
 
-  async function toggleSeasonPick(season) {
-    if (!user) {
-      setShowLoginWarning(true);
-      setTimeout(() => setShowLoginWarning(false), 3000);
-      return;
-    }
-    if (myPicks.includes(season)) {
-      await supabase.from("season_preferences").delete()
-        .eq("user_id", user.id).eq("perfume_id", id).eq("season", season);
-    } else {
-      await supabase.from("season_preferences").insert({ user_id: user.id, perfume_id: id, season });
-    }
-    fetchSeasonData();
+ async function toggleSeasonPick(season) {
+  if (!user) {
+    setShowLoginWarning(true);
+    setTimeout(() => setShowLoginWarning(false), 3000);
+    return;
   }
+  if (myPicks.includes(season)) {
+    await supabase.from("season_preferences").delete()
+      .eq("user_id", user.id).eq("perfume_id", id).eq("season", season);
+  } else {
+    await supabase.from("season_preferences").delete()
+      .eq("user_id", user.id).eq("perfume_id", id);
+    await supabase.from("season_preferences").insert({ user_id: user.id, perfume_id: id, season });
+  }
+  fetchSeasonData();
+}
 
   async function handleDelete() {
     const confirmed = window.confirm("Are you sure you want to delete this perfume? This cannot be undone.");
@@ -349,42 +351,42 @@ export default function PerfumeDetail() {
 
           <div style={{ display: "grid", gap: "1.2rem", marginBottom: "1.5rem" }}>
             <div>
-              <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase", marginBottom: "0.6rem", textAlign: "center" }}>{t.topNotes}</h4>
+              <h4 style={{ color: "#8a7a5c", fontSize: "1.05rem", fontWeight: "bold", textTransform: "uppercase", marginBottom: "0.6rem", textAlign: "center" }}>{t.topNotes}</h4>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", justifyContent: "center" }}>
                 {perfume.top_notes?.split(",").map((n) => n.trim()).filter(Boolean).map((n) => (
-                  <div key={n} style={{ textAlign: "center", width: "60px" }}>
-                    <div style={{ width: "50px", height: "50px", borderRadius: "50%", overflow: "hidden", margin: "0 auto", background: "#f0e6d2" }}>
+                  <div key={n} style={{ textAlign: "center", width: "78px" }}>
+                   <div style={{ width: "68px", height: "68px", borderRadius: "50%", overflow: "hidden", margin: "0 auto", background: "#f0e6d2" }}>
                       {noteImages[n] && <img src={noteImages[n]} alt={n} style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
                     </div>
-                    <p style={{ fontSize: "0.7rem", marginTop: "0.3rem" }}>{getNoteLabel(n)}</p>
+                    <p style={{ fontSize: "0.95rem", fontWeight: "bold", marginTop: "0.4rem" }}>{getNoteLabel(n)}</p>
                   </div>
                 ))}
               </div>
             </div>
 
             <div>
-              <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase", marginBottom: "0.6rem", textAlign: "center" }}>{t.middleNotes}</h4>
+             <h4 style={{ color: "#8a7a5c", fontSize: "1.05rem", fontWeight: "bold", textTransform: "uppercase", marginBottom: "0.6rem", textAlign: "center" }}>{t.topNotes}</h4>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", justifyContent: "center" }}>
                 {perfume.middle_notes?.split(",").map((n) => n.trim()).filter(Boolean).map((n) => (
-                  <div key={n} style={{ textAlign: "center", width: "60px" }}>
-                    <div style={{ width: "50px", height: "50px", borderRadius: "50%", overflow: "hidden", margin: "0 auto", background: "#f0e6d2" }}>
+                  <div key={n} style={{ textAlign: "center", width: "78px" }}>
+                    <div style={{ width: "68px", height: "68px", borderRadius: "50%", overflow: "hidden", margin: "0 auto", background: "#f0e6d2" }}>
                       {noteImages[n] && <img src={noteImages[n]} alt={n} style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
                     </div>
-                    <p style={{ fontSize: "0.7rem", marginTop: "0.3rem" }}>{getNoteLabel(n)}</p>
+                    <p style={{ fontSize: "0.95rem", fontWeight: "bold", marginTop: "0.4rem" }}>{getNoteLabel(n)}</p>
                   </div>
                 ))}
               </div>
             </div>
 
             <div>
-              <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase", marginBottom: "0.6rem", textAlign: "center" }}>{t.baseNotes}</h4>
+              <h4 style={{ color: "#8a7a5c", fontSize: "1.05rem", fontWeight: "bold", textTransform: "uppercase", marginBottom: "0.6rem", textAlign: "center" }}>{t.topNotes}</h4>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", justifyContent: "center" }}>
                 {perfume.base_notes?.split(",").map((n) => n.trim()).filter(Boolean).map((n) => (
-                  <div key={n} style={{ textAlign: "center", width: "60px" }}>
-                    <div style={{ width: "50px", height: "50px", borderRadius: "50%", overflow: "hidden", margin: "0 auto", background: "#f0e6d2" }}>
+                  <div key={n} style={{ textAlign: "center", width: "78px" }}>
+                    <div style={{ width: "68px", height: "68px", borderRadius: "50%", overflow: "hidden", margin: "0 auto", background: "#f0e6d2" }}>
                       {noteImages[n] && <img src={noteImages[n]} alt={n} style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
                     </div>
-                    <p style={{ fontSize: "0.7rem", marginTop: "0.3rem" }}>{getNoteLabel(n)}</p>
+                    <p style={{ fontSize: "0.95rem", fontWeight: "bold", marginTop: "0.4rem" }}>{getNoteLabel(n)}</p>
                   </div>
                 ))}
               </div>
