@@ -168,6 +168,8 @@ export default function Home() {
 
   return (
     <div dir={t.dir}>
+        <div className="home-bg-image" />
+        <div className="home-bg-overlay" />
       <header className="header">
         <div className="logo">{t.title}</div>
         <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>

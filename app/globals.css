@@ -444,8 +444,7 @@ body {
   position: relative;
 }
 
-body::before {
-  content: "";
+.home-bg-image {
   position: fixed;
   inset: 0;
   background-image: url('/store-bg.jpg');
@@ -456,8 +455,7 @@ body::before {
   animation: bgFadeIn 3s ease forwards;
 }
 
-body::after {
-  content: "";
+.home-bg-overlay {
   position: fixed;
   inset: 0;
   background: linear-gradient(180deg,
