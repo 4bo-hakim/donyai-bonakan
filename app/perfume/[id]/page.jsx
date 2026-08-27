@@ -294,7 +294,7 @@ export default function PerfumeDetail() {
   const maxCount = Math.max(...Object.values(seasonCounts), 1);
 
   return (
-    <div dir={t.dir} style={{ maxWidth: "700px", margin: "0 auto", padding: "2rem 1.5rem" }}>
+    <div dir={t.dir} className="perfume-detail-page" style={{ maxWidth: "700px", margin: "0 auto", padding: "2rem 1.5rem" }}>
       <a href="/" style={{ display: "inline-block", marginBottom: "1.5rem", color: "var(--black)", fontWeight: "bold" }}>← {t.back}</a>
 
       {!editing ? (

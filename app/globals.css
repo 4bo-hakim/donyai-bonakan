@@ -471,3 +471,8 @@ body {
   from { opacity: 0; }
   to { opacity: 0.65; }
 }
+@media (min-width: 1024px) {
+  .perfume-detail-page {
+    zoom: 1.25;
+  }
+}
