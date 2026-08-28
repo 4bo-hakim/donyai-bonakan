@@ -150,11 +150,17 @@ button {
 .search-input {
   flex: 1;
   min-width: 200px;
-  padding: 0.8rem 1rem;
+  padding: 0.8rem 1rem 0.8rem 2.4rem;
   border-radius: 10px;
   border: 1px solid var(--border);
-  background: white;
+  background: white url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%238a7a5c" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') no-repeat 0.8rem center;
+  background-size: 18px 18px;
   font-size: 1rem;
+}
+
+[dir="rtl"] .search-input {
+  padding: 0.8rem 2.4rem 0.8rem 1rem;
+  background-position: right 0.8rem center;
 }
 
 .filter-btn {
