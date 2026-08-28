@@ -1,8 +1,40 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { supabase } from "../../../lib/supabase";
 import { translations } from "../../../lib/translations";
+
+const NOTES_LIST = [
+  "Amber", "Amber Marine", "Sandalwood", "Cedarwood", "Oud",
+  "Musk", "Vanilla", "Caramel", "Cashmere", "Bergamot",
+  "Citrus", "Lemon", "Orange Blossom", "Jasmine", "Rose",
+  "Lavender", "Patchouli", "Vetiver", "Tobacco", "Leather",
+  "Black Leather", "Coffee", "Cinnamon", "Cardamom", "Pepper",
+  "Iris", "Tonka Bean", "Coconut", "Saffron", "Incense",
+  "Grapefruit", "Mandarin", "Neroli", "Ylang-Ylang", "Tuberose",
+  "Violet", "Peony", "Lily of the Valley", "Geranium", "Basil",
+  "Mint", "Green Tea", "Apple", "Pear", "Peach",
+  "Blackcurrant", "Fig", "Almond", "Honey", "White Musk",
+  "Woody", "Warm Spicy", "Oakmoss", "Nutmeg", "Clove",
+  "Ginger", "Pink Pepper", "Freesia", "Magnolia", "Water Lily",
+  "Marine", "Ozonic", "Pineapple", "Raspberry", "Strawberry",
+  "Plum", "Cocoa", "Praline", "Suede", "Birch",
+  "Anise", "Aldehydes", "Apricot", "Bamboo", "Bay Leaf",
+  "Benzoin", "Blackberry", "Blood Orange", "Cade", "Camphor",
+  "Cassis", "Champaca", "Cherry", "Chestnut", "Chocolate",
+  "Cistus", "Clary Sage", "Cognac", "Cucumber", "Currant",
+  "Cypress", "Date", "Dill", "Elemi", "Fir",
+  "Frangipani", "Frankincense", "Galbanum", "Gardenia", "Grape",
+  "Guaiac Wood", "Hay", "Heliotrope", "Hyacinth", "Immortelle",
+  "Juniper Berries", "Kiwi", "Labdanum", "Licorice", "Lily",
+  "Lime", "Lotus", "Mango", "Melon", "Mimosa",
+  "Myrrh", "Narcissus", "Orris", "Osmanthus", "Palo Santo",
+  "Ambergris", "Amber Wood", "Sea Notes",
+  "Black Pepper", "Ice Cream", "Brown Sugar", "Rum", "Watermelon",
+  "Orange", "Mahogany", "Fruits", "Ambrette", "Almizcle",
+  "Black Tea", "Toffee", "Mahonial", "Candied Almond", "Ambroxan",
+  "Truffle",
+];
 
 export default function AddCustomNote() {
   const [lang, setLang] = useState("ku");
@@ -22,6 +54,7 @@ export default function AddCustomNote() {
   const [editEn, setEditEn] = useState("");
   const [editKu, setEditKu] = useState("");
   const [editAr, setEditAr] = useState("");
+  const [listSearch, setListSearch] = useState("");
 
   const t = translations[lang];
 
@@ -52,6 +85,24 @@ export default function AddCustomNote() {
   useEffect(() => {
     fetchCustomNotesList();
   }, []);
+
+  const combinedNotes = useMemo(() => {
+    const builtIn = NOTES_LIST.map((n) => ({
+      note_key: n,
+      name_en: translations.en.notesList[n],
+      name_ku: translations.ku.notesList[n],
+      name_ar: translations.ar.notesList[n],
+      builtIn: true,
+    }));
+    const custom = customNotesList.map((c) => ({ ...c, builtIn: false }));
+    return [...builtIn, ...custom].sort((a, b) => a.name_en.localeCompare(b.name_en));
+  }, [customNotesList]);
+
+  const filteredCombinedNotes = combinedNotes.filter((n) =>
+    n.name_en.toLowerCase().includes(listSearch.toLowerCase()) ||
+    n.name_ku.includes(listSearch) ||
+    n.name_ar.includes(listSearch)
+  );
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -140,7 +191,7 @@ export default function AddCustomNote() {
   }
 
   return (
-    <div dir={t.dir} style={{ maxWidth: "500px", margin: "0 auto", padding: "2rem 1.5rem" }}>
+    <div dir={t.dir} style={{ maxWidth: "600px", margin: "0 auto", padding: "2rem 1.5rem" }}>
       <a href="/admin/notes" style={{ display: "inline-block", marginBottom: "1.5rem", color: "var(--black)", fontWeight: "bold" }}>← {t.back}</a>
       <h1 style={{ marginBottom: "1.5rem" }}>➕ Add Custom Note</h1>
 
@@ -170,9 +221,16 @@ export default function AddCustomNote() {
       </form>
 
       <div style={{ marginTop: "2.5rem" }}>
-        <h2 style={{ marginBottom: "1rem" }}>Existing Custom Notes</h2>
-        {customNotesList.length === 0 && <p style={{ color: "#8a7a5c" }}>No custom notes yet.</p>}
-        {customNotesList.map((note) => (
+        <h2 style={{ marginBottom: "1rem" }}>All Notes ({combinedNotes.length})</h2>
+        <input
+          className="search-input"
+          placeholder={t.searchPlaceholder}
+          value={listSearch}
+          onChange={(e) => setListSearch(e.target.value)}
+          style={{ marginBottom: "1rem" }}
+        />
+
+        {filteredCombinedNotes.map((note) => (
           <div key={note.note_key} style={{ border: "1px solid var(--border)", borderRadius: "10px", padding: "1rem", marginBottom: "0.8rem" }}>
             {editingKey === note.note_key ? (
               <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
@@ -188,11 +246,18 @@ export default function AddCustomNote() {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div>
                   <strong>{note.name_en}</strong> — {note.name_ku} — {note.name_ar}
+                  {note.builtIn && (
+                    <span style={{ marginLeft: "0.5rem", fontSize: "0.7rem", color: "#8a7a5c", background: "var(--background)", padding: "0.1rem 0.5rem", borderRadius: "10px" }}>
+                      Built-in
+                    </span>
+                  )}
                 </div>
-                <div style={{ display: "flex", gap: "0.5rem" }}>
-                  <button onClick={() => startEdit(note)} style={{ background: "#e6f0ff", color: "#1d4ed8", border: "1px solid #93c5fd", borderRadius: "8px", padding: "0.3rem 0.7rem", fontSize: "0.8rem" }}>✏️</button>
-                  <button onClick={() => handleDeleteNote(note.note_key)} style={{ background: "#fee2e2", color: "#b91c1c", border: "1px solid #fca5a5", borderRadius: "8px", padding: "0.3rem 0.7rem", fontSize: "0.8rem" }}>🗑</button>
-                </div>
+                {!note.builtIn && (
+                  <div style={{ display: "flex", gap: "0.5rem" }}>
+                    <button onClick={() => startEdit(note)} style={{ background: "#e6f0ff", color: "#1d4ed8", border: "1px solid #93c5fd", borderRadius: "8px", padding: "0.3rem 0.7rem", fontSize: "0.8rem" }}>✏️</button>
+                    <button onClick={() => handleDeleteNote(note.note_key)} style={{ background: "#fee2e2", color: "#b91c1c", border: "1px solid #fca5a5", borderRadius: "8px", padding: "0.3rem 0.7rem", fontSize: "0.8rem" }}>🗑</button>
+                  </div>
+                )}
               </div>
             )}
           </div>
