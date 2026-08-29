@@ -491,18 +491,20 @@ body {
 
 @media (min-width: 1024px) {
   .perfume-detail-page {
-    max-width: 1000px;
+    max-width: 1100px;
   }
   .detail-layout {
     display: grid;
     grid-template-columns: 380px 1fr;
-    column-gap: 3rem;
+    column-gap: 4rem;
     align-items: start;
   }
-  .detail-layout .col-left {
-    grid-column: 1;
+  .detail-left {
+    position: sticky;
+    top: 2rem;
+    align-self: start;
   }
-  .detail-layout .col-right {
-    grid-column: 2;
+  .detail-right {
+    min-width: 0;
   }
 }

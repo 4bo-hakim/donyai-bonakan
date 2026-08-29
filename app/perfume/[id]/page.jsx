@@ -300,7 +300,8 @@ export default function PerfumeDetail() {
 
       {!editing ? (
         <div className="detail-layout">
-          <div className="col-left" style={{
+          <div className="detail-left">
+          <div style={{
             width: "100%", aspectRatio: "1", maxWidth: "320px", margin: "0 auto 1.5rem auto",
             borderRadius: "16px", overflow: "hidden", position: "relative",
             background: "linear-gradient(135deg, #f0e6d2, #d9c9a3)",
@@ -319,14 +320,13 @@ export default function PerfumeDetail() {
             )}
           </div>
 
-          <div className="col-left" style={{ textAlign: "center", marginBottom: "1.5rem" }}>
+          <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
             <h1 style={{ fontSize: "1.8rem", color: "var(--black)" }}>{perfume.name}</h1>
             <p style={{ color: "#8a7a5c" }}>{perfume.brand}</p>
             <span className="gender-tag" style={{ marginTop: "0.5rem", display: "inline-block" }}>{t[perfume.gender] || perfume.gender}</span>
           </div>
 
           <button
-            className="col-left"
             onClick={toggleFavorite}
             style={{
               display: "block", margin: "0 auto 0.8rem auto",
@@ -340,7 +340,7 @@ export default function PerfumeDetail() {
           </button>
 
           {showLoginWarning && (
-            <p className="col-left" style={{
+            <p style={{
               textAlign: "center", color: "#b8860b", background: "#fff8e6",
               border: "1px solid #f0d98c", borderRadius: "10px", padding: "0.6rem 1rem",
               margin: "0 auto 1.2rem auto", maxWidth: "320px", fontSize: "0.9rem",
@@ -349,7 +349,33 @@ export default function PerfumeDetail() {
             </p>
           )}
 
-          <div className="col-right" style={{ display: "grid", gap: "1.2rem", marginBottom: "1.5rem" }}>
+          {profile?.is_admin && (
+            <div style={{ textAlign: "center", marginBottom: "1.5rem", display: "flex", gap: "0.8rem", justifyContent: "center" }}>
+              <button
+                onClick={startEditing}
+                style={{
+                  background: "#e6f0ff", color: "#1d4ed8", border: "1px solid #93c5fd",
+                  borderRadius: "20px", padding: "0.5rem 1.2rem", fontSize: "0.85rem",
+                }}
+              >
+                ✏️ Edit
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                style={{
+                  background: "#fee2e2", color: "#b91c1c", border: "1px solid #fca5a5",
+                  borderRadius: "20px", padding: "0.5rem 1.2rem", fontSize: "0.85rem",
+                }}
+              >
+                🗑 {deleting ? "Deleting..." : "Delete Perfume"}
+              </button>
+            </div>
+          )}
+          </div>
+
+          <div className="detail-right">
+          <div style={{ display: "grid", gap: "1.2rem", marginBottom: "1.5rem" }}>
             <div>
               <h4 style={{ color: "#8a7a5c", fontSize: "1.05rem", fontWeight: "bold", textTransform: "uppercase", marginBottom: "0.6rem", textAlign: "center" }}>{t.topNotes}</h4>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", justifyContent: "center" }}>
@@ -398,7 +424,7 @@ export default function PerfumeDetail() {
             </div>
           </div>
 
-          <div className="col-right" style={{ marginBottom: "2rem" }}>
+          <div style={{ marginBottom: "2rem" }}>
             <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase", marginBottom: "1rem" }}>{t.seasonPreference}</h4>
             <div style={{ display: "flex", justifyContent: "space-between", gap: "0.8rem" }}>
               {SEASON_LIST.map((s) => {
@@ -437,31 +463,7 @@ export default function PerfumeDetail() {
             )}
           </div>
 
-          {profile?.is_admin && (
-            <div className="col-left" style={{ textAlign: "center", marginBottom: "1.5rem", display: "flex", gap: "0.8rem", justifyContent: "center" }}>
-              <button
-                onClick={startEditing}
-                style={{
-                  background: "#e6f0ff", color: "#1d4ed8", border: "1px solid #93c5fd",
-                  borderRadius: "20px", padding: "0.5rem 1.2rem", fontSize: "0.85rem",
-                }}
-              >
-                ✏️ Edit
-              </button>
-              <button
-                onClick={handleDelete}
-                disabled={deleting}
-                style={{
-                  background: "#fee2e2", color: "#b91c1c", border: "1px solid #fca5a5",
-                  borderRadius: "20px", padding: "0.5rem 1.2rem", fontSize: "0.85rem",
-                }}
-              >
-                🗑 {deleting ? "Deleting..." : "Delete Perfume"}
-              </button>
-            </div>
-          )}
-
-          <div className="col-left" style={{ textAlign: "center", paddingBottom: "3rem" }}>
+          <div style={{ textAlign: "center", paddingBottom: "3rem" }}>
                <a
               href={whatsappLink}
               target="_blank"
@@ -474,6 +476,7 @@ export default function PerfumeDetail() {
             >
               📱 {t.orderButton}
             </a>
+          </div>
           </div>
         </div>
       ) : (
