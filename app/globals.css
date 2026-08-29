@@ -460,22 +460,22 @@ body {
   background-position: center;
   z-index: -2;
   opacity: 0;
-  animation: bgFadeIn 3s ease forwards;
+  animation: bgFadeIn 2.5s ease-in-out forwards;
 }
 
 .home-bg-overlay {
   position: fixed;
   inset: 0;
   background: linear-gradient(180deg,
-    rgba(250,246,240,0.75) 0%,
-    rgba(250,246,240,0.6) 35%,
-    rgba(250,246,240,0.75) 100%);
+    rgba(250,246,240,0.55) 0%,
+    rgba(250,246,240,0.4) 35%,
+    rgba(250,246,240,0.55) 100%);
   z-index: -1;
 }
 
 @keyframes bgFadeIn {
   from { opacity: 0; }
-  to { opacity: 0.65; }
+  to { opacity: 0.85; }
 }
 @media (min-width: 1024px) {
   .perfume-detail-page {
