@@ -131,10 +131,10 @@ button {
 }
 
 .hero p {
-  color: #6b5d3f;
-  font-size: 1rem;
-  font-weight: 600;
-  text-shadow: 0 1px 3px rgba(255,255,255,0.6);
+  color: #3a2f1d;
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(255,255,255,0.9), 0 2px 10px rgba(255,255,255,0.7);
 }
 
 /* Search + filter row */
