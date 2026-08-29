@@ -299,186 +299,182 @@ export default function PerfumeDetail() {
       <a href="/" style={{ display: "inline-block", marginBottom: "1.5rem", color: "var(--black)", fontWeight: "bold" }}>← {t.back}</a>
 
       {!editing ? (
-        <div className="detail-grid">
-          <div className="detail-media">
-            <div style={{
-              width: "100%", aspectRatio: "1", maxWidth: "320px", margin: "0 auto 1.5rem auto",
-              borderRadius: "16px", overflow: "hidden", position: "relative",
-              background: "linear-gradient(135deg, #f0e6d2, #d9c9a3)",
+        <>
+          <div style={{
+            width: "100%", aspectRatio: "1", maxWidth: "320px", margin: "0 auto 1.5rem auto",
+            borderRadius: "16px", overflow: "hidden", position: "relative",
+            background: "linear-gradient(135deg, #f0e6d2, #d9c9a3)",
+          }}>
+            {perfume.image_url && (
+              <img src={perfume.image_url} alt={perfume.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            )}
+            {perfume.year && (
+              <span style={{
+                position: "absolute", bottom: "10px", right: "10px",
+                background: "rgba(0,0,0,0.7)", color: "white",
+                fontSize: "0.85rem", padding: "0.25rem 0.6rem", borderRadius: "8px",
+              }}>
+                {perfume.year}
+              </span>
+            )}
+          </div>
+
+          <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
+            <h1 style={{ fontSize: "1.8rem", color: "var(--black)" }}>{perfume.name}</h1>
+            <p style={{ color: "#8a7a5c" }}>{perfume.brand}</p>
+            <span className="gender-tag" style={{ marginTop: "0.5rem", display: "inline-block" }}>{t[perfume.gender] || perfume.gender}</span>
+          </div>
+
+          <button
+            onClick={toggleFavorite}
+            style={{
+              display: "block", margin: "0 auto 0.8rem auto",
+              background: isFavorite ? "var(--gold)" : "white",
+              color: isFavorite ? "white" : "var(--black)",
+              border: "1px solid var(--border)", borderRadius: "30px",
+              padding: "0.7rem 1.5rem", fontSize: "0.95rem",
+            }}
+          >
+            {isFavorite ? `★ ${t.addedFavorite}` : `☆ ${t.addFavorite}`}
+          </button>
+
+          {showLoginWarning && (
+            <p style={{
+              textAlign: "center", color: "#b8860b", background: "#fff8e6",
+              border: "1px solid #f0d98c", borderRadius: "10px", padding: "0.6rem 1rem",
+              margin: "0 auto 1.2rem auto", maxWidth: "320px", fontSize: "0.9rem",
             }}>
-              {perfume.image_url && (
-                <img src={perfume.image_url} alt={perfume.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-              )}
-              {perfume.year && (
-                <span style={{
-                  position: "absolute", bottom: "10px", right: "10px",
-                  background: "rgba(0,0,0,0.7)", color: "white",
-                  fontSize: "0.85rem", padding: "0.25rem 0.6rem", borderRadius: "8px",
-                }}>
-                  {perfume.year}
-                </span>
-              )}
+              ⚠️ {t.loginFirst}
+            </p>
+          )}
+
+          <div style={{ display: "grid", gap: "1.2rem", marginBottom: "1.5rem" }}>
+            <div>
+              <h4 style={{ color: "#8a7a5c", fontSize: "1.05rem", fontWeight: "bold", textTransform: "uppercase", marginBottom: "0.6rem", textAlign: "center" }}>{t.topNotes}</h4>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", justifyContent: "center" }}>
+                {perfume.top_notes?.split(",").map((n) => n.trim()).filter(Boolean).map((n) => (
+                  <div key={n} style={{ textAlign: "center", width: "78px" }}>
+                    <div style={{ width: "68px", height: "68px", borderRadius: "50%", overflow: "hidden", margin: "0 auto", background: "#f0e6d2" }}>
+                      {noteImages[n] && <img src={noteImages[n]} alt={n} style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
+                    </div>
+                    <p style={{ fontSize: "0.95rem", fontWeight: "bold", marginTop: "0.4rem" }}>{getNoteLabel(n)}</p>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            <button
-              onClick={toggleFavorite}
-              style={{
-                display: "block", margin: "0 auto 0.8rem auto",
-                background: isFavorite ? "var(--gold)" : "white",
-                color: isFavorite ? "white" : "var(--black)",
-                border: "1px solid var(--border)", borderRadius: "30px",
-                padding: "0.7rem 1.5rem", fontSize: "0.95rem",
-              }}
-            >
-              {isFavorite ? `★ ${t.addedFavorite}` : `☆ ${t.addFavorite}`}
-            </button>
+            <div>
+              <h4 style={{ color: "#8a7a5c", fontSize: "1.05rem", fontWeight: "bold", textTransform: "uppercase", marginBottom: "0.6rem", textAlign: "center" }}>{t.middleNotes}</h4>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", justifyContent: "center" }}>
+                {perfume.middle_notes?.split(",").map((n) => n.trim()).filter(Boolean).map((n) => (
+                  <div key={n} style={{ textAlign: "center", width: "78px" }}>
+                    <div style={{ width: "68px", height: "68px", borderRadius: "50%", overflow: "hidden", margin: "0 auto", background: "#f0e6d2" }}>
+                      {noteImages[n] && <img src={noteImages[n]} alt={n} style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
+                    </div>
+                    <p style={{ fontSize: "0.95rem", fontWeight: "bold", marginTop: "0.4rem" }}>{getNoteLabel(n)}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-            {showLoginWarning && (
+            <div>
+              <h4 style={{ color: "#8a7a5c", fontSize: "1.05rem", fontWeight: "bold", textTransform: "uppercase", marginBottom: "0.6rem", textAlign: "center" }}>{t.baseNotes}</h4>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", justifyContent: "center" }}>
+                {perfume.base_notes?.split(",").map((n) => n.trim()).filter(Boolean).map((n) => (
+                  <div key={n} style={{ textAlign: "center", width: "78px" }}>
+                    <div style={{ width: "68px", height: "68px", borderRadius: "50%", overflow: "hidden", margin: "0 auto", background: "#f0e6d2" }}>
+                      {noteImages[n] && <img src={noteImages[n]} alt={n} style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
+                    </div>
+                    <p style={{ fontSize: "0.95rem", fontWeight: "bold", marginTop: "0.4rem" }}>{getNoteLabel(n)}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div style={{ textAlign: "center" }}>
+              <h4 style={{ color: "#8a7a5c", fontSize: "1.05rem", fontWeight: "bold", textTransform: "uppercase" }}>{t.longevity}</h4>
+              <p style={{ fontSize: "0.95rem", fontWeight: "bold" }}>{t.longevityLevels[perfume.longevity] || perfume.longevity}</p>
+            </div>
+          </div>
+
+          <div style={{ marginBottom: "2rem" }}>
+            <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase", marginBottom: "1rem" }}>{t.seasonPreference}</h4>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: "0.8rem" }}>
+              {SEASON_LIST.map((s) => {
+                const isPicked = myPicks.includes(s);
+                const barWidth = (seasonCounts[s] / maxCount) * 100;
+                return (
+                  <button
+                    key={s}
+                    onClick={() => toggleSeasonPick(s)}
+                    style={{
+                      flex: 1, background: "none",
+                      border: isPicked ? `2px solid ${SEASON_COLORS[s]}` : "1px solid var(--border)",
+                      borderRadius: "12px", padding: "0.8rem 0.4rem",
+                      display: "flex", flexDirection: "column", alignItems: "center", gap: "0.4rem",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <span style={{ fontSize: "1.6rem" }}>{SEASON_ICONS[s]}</span>
+                    <span style={{ fontSize: "0.8rem", color: "var(--black)" }}>{t.seasons[s]}</span>
+                    <div style={{ width: "100%", height: "6px", background: "#eee", borderRadius: "4px", overflow: "hidden" }}>
+                      <div style={{ width: `${barWidth}%`, height: "100%", background: SEASON_COLORS[s] }} />
+                    </div>
+                    <span style={{ fontSize: "0.8rem", fontWeight: "bold", color: SEASON_COLORS[s] }}>{seasonCounts[s]}</span>
+                  </button>
+                );
+              })}
+            </div>
+            {showSeasonLoginWarning && (
               <p style={{
                 textAlign: "center", color: "#b8860b", background: "#fff8e6",
                 border: "1px solid #f0d98c", borderRadius: "10px", padding: "0.6rem 1rem",
-                margin: "0 auto 1.2rem auto", maxWidth: "320px", fontSize: "0.9rem",
+                margin: "1rem auto 0 auto", maxWidth: "320px", fontSize: "0.9rem",
               }}>
                 ⚠️ {t.loginFirst}
               </p>
             )}
+          </div>
 
-            {profile?.is_admin && (
-              <div style={{ textAlign: "center", marginBottom: "1.5rem", display: "flex", gap: "0.8rem", justifyContent: "center" }}>
-                <button
-                  onClick={startEditing}
-                  style={{
-                    background: "#e6f0ff", color: "#1d4ed8", border: "1px solid #93c5fd",
-                    borderRadius: "20px", padding: "0.5rem 1.2rem", fontSize: "0.85rem",
-                  }}
-                >
-                  ✏️ Edit
-                </button>
-                <button
-                  onClick={handleDelete}
-                  disabled={deleting}
-                  style={{
-                    background: "#fee2e2", color: "#b91c1c", border: "1px solid #fca5a5",
-                    borderRadius: "20px", padding: "0.5rem 1.2rem", fontSize: "0.85rem",
-                  }}
-                >
-                  🗑 {deleting ? "Deleting..." : "Delete Perfume"}
-                </button>
-              </div>
-            )}
-
-            <div style={{ textAlign: "center", paddingBottom: "1rem" }}>
-                <a
-                href={whatsappLink}
-                target="_blank"
-                rel="noopener noreferrer"
+          {profile?.is_admin && (
+            <div style={{ textAlign: "center", marginBottom: "1.5rem", display: "flex", gap: "0.8rem", justifyContent: "center" }}>
+              <button
+                onClick={startEditing}
                 style={{
-                  display: "inline-flex", alignItems: "center", gap: "0.6rem",
-                  background: "#25D366", color: "white", padding: "0.9rem 1.6rem",
-                  borderRadius: "30px", fontSize: "1rem", fontWeight: "bold",
+                  background: "#e6f0ff", color: "#1d4ed8", border: "1px solid #93c5fd",
+                  borderRadius: "20px", padding: "0.5rem 1.2rem", fontSize: "0.85rem",
                 }}
               >
-                📱 {t.orderButton}
-              </a>
+                ✏️ Edit
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                style={{
+                  background: "#fee2e2", color: "#b91c1c", border: "1px solid #fca5a5",
+                  borderRadius: "20px", padding: "0.5rem 1.2rem", fontSize: "0.85rem",
+                }}
+              >
+                🗑 {deleting ? "Deleting..." : "Delete Perfume"}
+              </button>
             </div>
+          )}
+
+          <div style={{ textAlign: "center", paddingBottom: "3rem" }}>
+              <a
+              href={whatsappLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "inline-flex", alignItems: "center", gap: "0.6rem",
+                background: "#25D366", color: "white", padding: "0.9rem 1.6rem",
+                borderRadius: "30px", fontSize: "1rem", fontWeight: "bold",
+              }}
+            >
+              📱 {t.orderButton}
+            </a>
           </div>
-
-          <div className="detail-content">
-            <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
-              <h1 style={{ fontSize: "1.8rem", color: "var(--black)" }}>{perfume.name}</h1>
-              <p style={{ color: "#8a7a5c" }}>{perfume.brand}</p>
-              <span className="gender-tag" style={{ marginTop: "0.5rem", display: "inline-block" }}>{t[perfume.gender] || perfume.gender}</span>
-            </div>
-
-            <div style={{ display: "grid", gap: "1.2rem", marginBottom: "1.5rem" }}>
-              <div>
-                <h4 style={{ color: "#8a7a5c", fontSize: "1.05rem", fontWeight: "bold", textTransform: "uppercase", marginBottom: "0.6rem", textAlign: "center" }}>{t.topNotes}</h4>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", justifyContent: "center" }}>
-                  {perfume.top_notes?.split(",").map((n) => n.trim()).filter(Boolean).map((n) => (
-                    <div key={n} style={{ textAlign: "center", width: "78px" }}>
-                      <div style={{ width: "68px", height: "68px", borderRadius: "50%", overflow: "hidden", margin: "0 auto", background: "#f0e6d2" }}>
-                        {noteImages[n] && <img src={noteImages[n]} alt={n} style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
-                      </div>
-                      <p style={{ fontSize: "0.95rem", fontWeight: "bold", marginTop: "0.4rem" }}>{getNoteLabel(n)}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <h4 style={{ color: "#8a7a5c", fontSize: "1.05rem", fontWeight: "bold", textTransform: "uppercase", marginBottom: "0.6rem", textAlign: "center" }}>{t.middleNotes}</h4>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", justifyContent: "center" }}>
-                  {perfume.middle_notes?.split(",").map((n) => n.trim()).filter(Boolean).map((n) => (
-                    <div key={n} style={{ textAlign: "center", width: "78px" }}>
-                      <div style={{ width: "68px", height: "68px", borderRadius: "50%", overflow: "hidden", margin: "0 auto", background: "#f0e6d2" }}>
-                        {noteImages[n] && <img src={noteImages[n]} alt={n} style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
-                      </div>
-                      <p style={{ fontSize: "0.95rem", fontWeight: "bold", marginTop: "0.4rem" }}>{getNoteLabel(n)}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <h4 style={{ color: "#8a7a5c", fontSize: "1.05rem", fontWeight: "bold", textTransform: "uppercase", marginBottom: "0.6rem", textAlign: "center" }}>{t.baseNotes}</h4>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", justifyContent: "center" }}>
-                  {perfume.base_notes?.split(",").map((n) => n.trim()).filter(Boolean).map((n) => (
-                    <div key={n} style={{ textAlign: "center", width: "78px" }}>
-                      <div style={{ width: "68px", height: "68px", borderRadius: "50%", overflow: "hidden", margin: "0 auto", background: "#f0e6d2" }}>
-                        {noteImages[n] && <img src={noteImages[n]} alt={n} style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
-                      </div>
-                      <p style={{ fontSize: "0.95rem", fontWeight: "bold", marginTop: "0.4rem" }}>{getNoteLabel(n)}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div style={{ textAlign: "center" }}>
-                <h4 style={{ color: "#8a7a5c", fontSize: "1.05rem", fontWeight: "bold", textTransform: "uppercase" }}>{t.longevity}</h4>
-                <p style={{ fontSize: "0.95rem", fontWeight: "bold" }}>{t.longevityLevels[perfume.longevity] || perfume.longevity}</p>
-              </div>
-            </div>
-
-            <div style={{ marginBottom: "2rem" }}>
-              <h4 style={{ color: "#8a7a5c", fontSize: "0.85rem", textTransform: "uppercase", marginBottom: "1rem" }}>{t.seasonPreference}</h4>
-              <div style={{ display: "flex", justifyContent: "space-between", gap: "0.8rem" }}>
-                {SEASON_LIST.map((s) => {
-                  const isPicked = myPicks.includes(s);
-                  const barWidth = (seasonCounts[s] / maxCount) * 100;
-                  return (
-                    <button
-                      key={s}
-                      onClick={() => toggleSeasonPick(s)}
-                      style={{
-                        flex: 1, background: "none",
-                        border: isPicked ? `2px solid ${SEASON_COLORS[s]}` : "1px solid var(--border)",
-                        borderRadius: "12px", padding: "0.8rem 0.4rem",
-                        display: "flex", flexDirection: "column", alignItems: "center", gap: "0.4rem",
-                        cursor: "pointer",
-                      }}
-                    >
-                      <span style={{ fontSize: "1.6rem" }}>{SEASON_ICONS[s]}</span>
-                      <span style={{ fontSize: "0.8rem", color: "var(--black)" }}>{t.seasons[s]}</span>
-                      <div style={{ width: "100%", height: "6px", background: "#eee", borderRadius: "4px", overflow: "hidden" }}>
-                        <div style={{ width: `${barWidth}%`, height: "100%", background: SEASON_COLORS[s] }} />
-                      </div>
-                      <span style={{ fontSize: "0.8rem", fontWeight: "bold", color: SEASON_COLORS[s] }}>{seasonCounts[s]}</span>
-                    </button>
-                  );
-                })}
-              </div>
-              {showSeasonLoginWarning && (
-                <p style={{
-                  textAlign: "center", color: "#b8860b", background: "#fff8e6",
-                  border: "1px solid #f0d98c", borderRadius: "10px", padding: "0.6rem 1rem",
-                  margin: "1rem auto 0 auto", maxWidth: "320px", fontSize: "0.9rem",
-                }}>
-                  ⚠️ {t.loginFirst}
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
+        </>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: "1.2rem", paddingBottom: "3rem" }}>
           <h2>✏️ Editing Perfume</h2>

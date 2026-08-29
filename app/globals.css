@@ -486,18 +486,5 @@ body {
   .perfume-detail-page {
     max-width: 1000px;
   }
-  .detail-grid {
-    display: flex;
-    gap: 3rem;
-    align-items: flex-start;
-    text-align: left;
-  }
-  .detail-media {
-    flex: 0 0 360px;
-    position: sticky;
-    top: 2rem;
-  }
-  .detail-content {
-    flex: 1;
-  }
+  
 }
