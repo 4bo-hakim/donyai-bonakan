@@ -488,11 +488,21 @@ body {
   }
   
 }
+
 @media (min-width: 1024px) {
   .perfume-detail-page {
-    max-width: 900px;
+    max-width: 1000px;
   }
-  .perfume-detail-page .chip-row {
-    justify-content: center;
+  .detail-layout {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    column-gap: 3rem;
+    align-items: start;
+  }
+  .detail-layout .col-left {
+    grid-column: 1;
+  }
+  .detail-layout .col-right {
+    grid-column: 2;
   }
 }
