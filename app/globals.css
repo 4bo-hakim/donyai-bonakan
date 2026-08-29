@@ -488,3 +488,11 @@ body {
   }
   
 }
+@media (min-width: 1024px) {
+  .perfume-detail-page {
+    max-width: 900px;
+  }
+  .perfume-detail-page .chip-row {
+    justify-content: center;
+  }
+}
