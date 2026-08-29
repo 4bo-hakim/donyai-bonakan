@@ -66,6 +66,9 @@ export default function PerfumeDetail() {
   const [editTopNotes, setEditTopNotes] = useState([]);
   const [editMiddleNotes, setEditMiddleNotes] = useState([]);
   const [editBaseNotes, setEditBaseNotes] = useState([]);
+  const [editTopSearch, setEditTopSearch] = useState("");
+  const [editMiddleSearch, setEditMiddleSearch] = useState("");
+  const [editBaseSearch, setEditBaseSearch] = useState("");
   const [editImageFile, setEditImageFile] = useState(null);
   const [editImagePreview, setEditImagePreview] = useState(null);
   const [savingEdit, setSavingEdit] = useState(false);
@@ -238,6 +241,9 @@ export default function PerfumeDetail() {
     setEditBaseNotes(perfume.base_notes ? perfume.base_notes.split(",").map((s) => s.trim()).filter(Boolean) : []);
     setEditImagePreview(perfume.image_url);
     setEditImageFile(null);
+    setEditTopSearch("");
+    setEditMiddleSearch("");
+    setEditBaseSearch("");
     setEditing(true);
   }
 
@@ -464,7 +470,7 @@ export default function PerfumeDetail() {
           </div>
 
           <div style={{ textAlign: "center", paddingBottom: "3rem" }}>
-               <a
+              <a 
               href={whatsappLink}
               target="_blank"
               rel="noopener noreferrer"
@@ -528,8 +534,17 @@ export default function PerfumeDetail() {
 
           <div>
             <h4 style={{ marginBottom: "0.5rem" }}>{t.topNotesSection}</h4>
+            <input
+              className="search-input"
+              placeholder={t.searchPlaceholder}
+              value={editTopSearch}
+              onChange={(e) => setEditTopSearch(e.target.value)}
+              style={{ marginBottom: "0.6rem" }}
+            />
             <div className="chip-row">
-              {sortedNotes.map((n) => (
+              {sortedNotes
+                .filter((n) => getNoteLabel(n).toLowerCase().includes(editTopSearch.toLowerCase()))
+                .map((n) => (
                 <button
                   type="button"
                   key={n}
@@ -548,8 +563,17 @@ export default function PerfumeDetail() {
 
           <div>
             <h4 style={{ marginBottom: "0.5rem" }}>{t.middleNotesSection}</h4>
+            <input
+              className="search-input"
+              placeholder={t.searchPlaceholder}
+              value={editMiddleSearch}
+              onChange={(e) => setEditMiddleSearch(e.target.value)}
+              style={{ marginBottom: "0.6rem" }}
+            />
             <div className="chip-row">
-              {sortedNotes.map((n) => (
+              {sortedNotes
+                .filter((n) => getNoteLabel(n).toLowerCase().includes(editMiddleSearch.toLowerCase()))
+                .map((n) => (
                 <button
                   type="button"
                   key={n}
@@ -568,8 +592,17 @@ export default function PerfumeDetail() {
 
           <div>
             <h4 style={{ marginBottom: "0.5rem" }}>{t.baseNotesSection}</h4>
+            <input
+              className="search-input"
+              placeholder={t.searchPlaceholder}
+              value={editBaseSearch}
+              onChange={(e) => setEditBaseSearch(e.target.value)}
+              style={{ marginBottom: "0.6rem" }}
+            />
             <div className="chip-row">
-              {sortedNotes.map((n) => (
+              {sortedNotes
+                .filter((n) => getNoteLabel(n).toLowerCase().includes(editBaseSearch.toLowerCase()))
+                .map((n) => (
                 <button
                   type="button"
                   key={n}
